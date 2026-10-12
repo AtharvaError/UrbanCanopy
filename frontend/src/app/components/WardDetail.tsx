@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import CoefficientSparkline from "./CoefficientSparkline";
@@ -95,6 +96,71 @@ export default function WardDetail({
 }) {
   const areas = areasForWard(ward.ward_id);
   const topDriver = profile ? describeTopDriver(profile) : null;
+
+  const [aiExplanation, setAiExplanation] = useState("");
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiError, setAiError] = useState("");
+
+  useEffect(() => {
+    setAiExplanation("");
+    setAiError("");
+  }, [ward.ward_id]);
+
+  const selectedLocality = {
+    name: areas.length > 0 ? `${ward.ward_id} (${areas.join(", ")})` : ward.ward_id,
+    hvi: ward.HVI ?? profile?.hvi ?? null,
+    rank: ward.rank ?? profile?.rank ?? null,
+    factors: {
+      "Land Surface Temperature (LST)": ward.contrib_LST_C ?? profile?.LST_C ?? null,
+      "Vegetation Index (NDVI)": ward.contrib_NDVI ?? profile?.NDVI ?? null,
+      "Population Density (km²)": ward.contrib_pop_density_km2 ?? profile?.pop_density_km2 ?? null,
+      "Child Population %": ward.contrib_child_pct ?? profile?.child_pct ?? null,
+      "Slum Settlements %": ward.contrib_slum_pct ?? profile?.slum_pct ?? null,
+      "Hospital Distance (m)": ward.contrib_hospital_dist_m ?? profile?.hospital_dist_m ?? null,
+      "Impervious Surface %": ward.contrib_impervious_pct ?? profile?.impervious_pct ?? null,
+    },
+    recommendation:
+      recs.length > 0
+        ? recs.map((r) => `${r.intervention}: ${r.rationale}`).join("; ")
+        : "Prioritize reflective cool roofs and urban shade canopy.",
+  };
+
+  async function explainHeatRisk(locality: typeof selectedLocality) {
+    setAiLoading(true);
+    setAiError("");
+    setAiExplanation("");
+
+    try {
+      const response = await fetch(
+        "http://localhost:3001/api/heat-explain",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            localityName: locality.name,
+            hvi: locality.hvi,
+            rank: locality.rank,
+            factors: locality.factors,
+            recommendation: locality.recommendation,
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Request failed");
+      }
+
+      setAiExplanation(data.explanation);
+    } catch (error: any) {
+      setAiError(error.message || "Unable to contact the AI service.");
+    } finally {
+      setAiLoading(false);
+    }
+  }
 
   return (
     // Sized for the sidebar, which is the narrowest place this renders; the
@@ -221,6 +287,36 @@ export default function WardDetail({
           </div>
         </>
       )}
+
+      <Separator className="my-4" />
+      <section className="ai-heat-explainer rounded-xl border border-border bg-card/40 p-3.5 text-xs">
+        <div className="flex items-center justify-between gap-3">
+          <h3 className="font-semibold text-foreground">AI Heat Risk Explainer</h3>
+
+          <button
+            onClick={() => explainHeatRisk(selectedLocality)}
+            disabled={aiLoading || !selectedLocality}
+            className="inline-flex shrink-0 items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 font-medium text-primary-foreground shadow-xs transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {aiLoading ? "Analysing..." : "Explain with AI"}
+          </button>
+        </div>
+
+        {aiError && (
+          <p role="alert" className="mt-2.5 rounded border border-destructive/20 bg-destructive/10 p-2 text-destructive">
+            {aiError}
+          </p>
+        )}
+
+        {aiExplanation && (
+          <div aria-live="polite" className="mt-3 rounded border border-border bg-background p-3">
+            <h4 className="font-semibold text-foreground">Locality analysis</h4>
+            <p style={{ whiteSpace: "pre-wrap" }} className="mt-1.5 text-xs leading-relaxed text-muted-foreground">
+              {aiExplanation}
+            </p>
+          </div>
+        )}
+      </section>
     </div>
   );
 }

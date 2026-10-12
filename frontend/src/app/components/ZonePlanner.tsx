@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { ArrowRight, ChevronLeft, ChevronRight, Sun, TreePine, Trees, X } from "lucide-react";
+import { ArrowRight, ChevronLeft, ChevronRight, Loader2, Sparkles, Sun, TreePine, Trees, X } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ACTIVE_CITY } from "@/lib/city";
 import { CANOPY_THRESHOLD_PCT, MAX_REALISTIC_CANOPY_PCT, MAX_REALISTIC_PARK_PCT } from "@/lib/coefficients";
@@ -467,6 +467,14 @@ function PlannerBody({
 }) {
   const { wards, recs, profiles, error } = useWardData();
   const [inputs, setInputs] = useState<ScenarioInputs>(NO_CHANGE);
+  const [aiExplanation, setAiExplanation] = useState("");
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiError, setAiError] = useState("");
+
+  useEffect(() => {
+    setAiExplanation("");
+    setAiError("");
+  }, [wardId]);
 
   const selected = wards?.find((f) => f.properties.ward_id === wardId) ?? null;
   const profile = profiles?.wards.find((w) => w.ward_id === wardId) ?? null;
@@ -532,6 +540,101 @@ function PlannerBody({
   const previous = index > 0 ? wards[index - 1].properties.ward_id : null;
   const next = index >= 0 && index < wards.length - 1 ? wards[index + 1].properties.ward_id : null;
   const type = typeOf(profile, profiles);
+
+  const selectedLocality = {
+    name: props.ward_id,
+    hvi: Number(score.toFixed(1)),
+    rank: rank,
+    factors: breakdown
+      ? Object.fromEntries(
+          breakdown.factors.map((f) => [f.label, `${f.raw} (${signed(f.points)} pts)`])
+        )
+      : {},
+    recommendation:
+      wardRecs.length > 0
+        ? wardRecs.map((r) => `${r.intervention}: ${r.rationale}`).join("; ")
+        : "Cool roofs and urban vegetation interventions",
+  };
+
+  async function explainHeatRisk(locality: typeof selectedLocality) {
+    setAiLoading(true);
+    setAiError("");
+    setAiExplanation("");
+
+    try {
+      const response = await fetch("http://localhost:3001/api/heat-explain", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          localityName: locality.name,
+          hvi: locality.hvi,
+          rank: locality.rank,
+          factors: locality.factors,
+          recommendation: locality.recommendation,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Request failed");
+      }
+
+      setAiExplanation(data.explanation);
+    } catch (error: any) {
+      setAiError(error.message || "Unable to contact the AI service.");
+    } finally {
+      setAiLoading(false);
+    }
+  }
+
+  const aiExplainerSection = (
+    <section className="ai-heat-explainer rounded-xl border border-border bg-card/60 p-4 text-xs">
+      <div className="flex items-center justify-between gap-3">
+        <div>
+          <h3 className="font-semibold text-foreground flex items-center gap-1.5">
+            <Sparkles className="h-4 w-4 text-emerald-400" />
+            AI Heat Risk Explainer
+          </h3>
+          <p className="mt-0.5 text-[11px] text-muted-foreground">
+            Locality climate intelligence powered by Experiential Labs AI
+          </p>
+        </div>
+
+        <button
+          onClick={() => explainHeatRisk(selectedLocality)}
+          disabled={aiLoading || !selectedLocality}
+          className="inline-flex shrink-0 items-center gap-1.5 rounded-md bg-emerald-600 px-3 py-1.5 font-medium text-white shadow-xs transition hover:bg-emerald-500 disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          {aiLoading ? (
+            <>
+              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              <span>Analysing...</span>
+            </>
+          ) : (
+            "Explain with AI"
+          )}
+        </button>
+      </div>
+
+      {aiError && (
+        <p role="alert" className="mt-3 rounded border border-destructive/30 bg-destructive/10 p-2.5 text-destructive">
+          {aiError}
+        </p>
+      )}
+
+      {aiExplanation && (
+        <div aria-live="polite" className="mt-3 rounded border border-border bg-background p-3.5">
+          <h4 className="font-semibold text-foreground">Locality analysis</h4>
+          <p style={{ whiteSpace: "pre-wrap" }} className="mt-1.5 text-xs leading-relaxed text-muted-foreground">
+            {aiExplanation}
+          </p>
+        </div>
+      )}
+    </section>
+  );
 
   return (
     <>
@@ -609,13 +712,18 @@ function PlannerBody({
             />
             Compare with city average
           </label>
-          <p className="text-right text-[11px] leading-snug text-muted-foreground">
-            Illustrative. Not a health prediction.
-            <br />
-            <Link href="/calculator#how-the-score-works" className="underline underline-offset-2 hover:text-foreground">
-              How the score works
-            </Link>
-          </p>
+          <button
+            type="button"
+            onClick={() => {
+              onTabChange("why");
+              explainHeatRisk(selectedLocality);
+            }}
+            disabled={aiLoading}
+            className="inline-flex items-center gap-1.5 rounded-md bg-emerald-600 px-2.5 py-1 text-xs font-medium text-white shadow-xs transition hover:bg-emerald-500 disabled:opacity-50"
+          >
+            <Sparkles className="h-3.5 w-3.5" />
+            {aiLoading ? "Analysing..." : "Explain with AI"}
+          </button>
         </div>
       </header>
 
@@ -623,6 +731,10 @@ function PlannerBody({
         <div className="border-b border-border px-5 py-2.5">
           <TabsList>
             <TabsTrigger value="why">Why this zone?</TabsTrigger>
+            <TabsTrigger value="ai" className="gap-1.5">
+              AI Explainer
+              <span className="rounded-full bg-emerald-500/20 px-1.5 py-0.2 text-[10px] font-semibold text-emerald-400">AI</span>
+            </TabsTrigger>
             <TabsTrigger value="whatif">What if?</TabsTrigger>
             <TabsTrigger value="actions">Actions</TabsTrigger>
           </TabsList>
@@ -630,10 +742,20 @@ function PlannerBody({
         <div className="ward-scroll min-h-0 flex-1 overflow-y-auto px-5 py-5">
           <TabsContent value="why">
             {breakdown ? (
-              <WhyTab breakdown={breakdown} compareCity={compareCity} scenarioActive={scenarioActive} />
+              <div className="space-y-6">
+                <WhyTab breakdown={breakdown} compareCity={compareCity} scenarioActive={scenarioActive} />
+                <div className="border-t border-border pt-5">
+                  {aiExplainerSection}
+                </div>
+              </div>
             ) : (
               <p className="text-sm text-muted-foreground">The score breakdown is not available for this dataset.</p>
             )}
+          </TabsContent>
+          <TabsContent value="ai">
+            <div className="space-y-4">
+              {aiExplainerSection}
+            </div>
           </TabsContent>
           <TabsContent value="whatif">
             <WhatIfTab inputs={inputs} onChange={setInputs} outcome={outcome} ready={cellData !== null} />
