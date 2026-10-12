@@ -3,9 +3,10 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Thermometer } from "lucide-react";
 import Logo from "./Logo";
 import ThemeToggle from "./ThemeToggle";
+import { useWeather } from "@/lib/useWeather";
 
 const NAV = [
   { href: "/dashboard", label: "Dashboard" },
@@ -18,6 +19,7 @@ export default function SiteHeader({ compact = false }: { compact?: boolean }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const closeButton = useRef<HTMLButtonElement>(null);
+  const { weather, tempFormatted, isStale, lastUpdatedFormatted } = useWeather();
 
   /** The panel covers the page, so the page behind it must not scroll under it. */
   useEffect(() => {
@@ -68,7 +70,34 @@ export default function SiteHeader({ compact = false }: { compact?: boolean }) {
           })}
         </nav>
 
-        <div className="hidden md:block">
+        <div className="hidden items-center gap-3 md:flex">
+          {weather && tempFormatted && (
+            <div
+              className="flex items-center gap-1.5 rounded-full border border-border/80 bg-surface/70 px-2.5 py-1 text-xs text-muted-foreground"
+              title={`Live OpenWeatherMap for ${weather.city || "Nagpur"}${
+                isStale && lastUpdatedFormatted ? ` (stale, last updated ${lastUpdatedFormatted})` : ""
+              }`}
+            >
+              <span className="relative flex h-2 w-2 shrink-0" aria-hidden>
+                {!isStale && (
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand-emerald/70" />
+                )}
+                <span
+                  className={`relative inline-flex h-2 w-2 rounded-full ${
+                    isStale ? "bg-amber-500" : "bg-brand-emerald"
+                  }`}
+                />
+              </span>
+              <Thermometer className="h-3.5 w-3.5 text-brand-teal" aria-hidden />
+              <span>
+                {weather.city || "Nagpur"}:{" "}
+                <span className="font-mono font-medium text-foreground">{tempFormatted}</span>
+              </span>
+              {isStale && lastUpdatedFormatted && (
+                <span className="text-[10px] text-amber-500/90 font-mono">({lastUpdatedFormatted})</span>
+              )}
+            </div>
+          )}
           <ThemeToggle />
         </div>
 
@@ -147,7 +176,21 @@ export default function SiteHeader({ compact = false }: { compact?: boolean }) {
           })}
         </nav>
 
-          <div className="border-t border-border px-6 py-4">
+          <div className="flex items-center justify-between border-t border-border px-6 py-4">
+            {weather && tempFormatted ? (
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Thermometer className="h-4 w-4 text-brand-teal" aria-hidden />
+                <span>
+                  {weather.city || "Nagpur"}:{" "}
+                  <span className="font-mono font-medium text-foreground">{tempFormatted}</span>
+                </span>
+                {isStale && lastUpdatedFormatted && (
+                  <span className="text-xs text-amber-500 font-mono">({lastUpdatedFormatted})</span>
+                )}
+              </div>
+            ) : (
+              <span className="text-xs text-muted-foreground">UrbanCanopy</span>
+            )}
             <ThemeToggle />
           </div>
         </div>
