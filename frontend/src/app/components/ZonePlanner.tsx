@@ -467,14 +467,19 @@ function PlannerBody({
 }) {
   const { wards, recs, profiles, error } = useWardData();
   const [inputs, setInputs] = useState<ScenarioInputs>(NO_CHANGE);
-  const [aiExplanation, setAiExplanation] = useState("");
+  const [aiState, setAiState] = useState<{
+    wardId: string;
+    explanation: string;
+    error: string;
+  }>({
+    wardId,
+    explanation: "",
+    error: "",
+  });
   const [aiLoading, setAiLoading] = useState(false);
-  const [aiError, setAiError] = useState("");
 
-  useEffect(() => {
-    setAiExplanation("");
-    setAiError("");
-  }, [wardId]);
+  const aiExplanation = aiState.wardId === wardId ? aiState.explanation : "";
+  const aiError = aiState.wardId === wardId ? aiState.error : "";
 
   const selected = wards?.find((f) => f.properties.ward_id === wardId) ?? null;
   const profile = profiles?.wards.find((w) => w.ward_id === wardId) ?? null;
@@ -558,8 +563,7 @@ function PlannerBody({
 
   async function explainHeatRisk(locality: typeof selectedLocality) {
     setAiLoading(true);
-    setAiError("");
-    setAiExplanation("");
+    setAiState({ wardId, explanation: "", error: "" });
 
     try {
       const response = await fetch("http://localhost:3001/api/heat-explain", {
@@ -582,9 +586,10 @@ function PlannerBody({
         throw new Error(data.error || "Request failed");
       }
 
-      setAiExplanation(data.explanation);
-    } catch (error: any) {
-      setAiError(error.message || "Unable to contact the AI service.");
+      setAiState({ wardId, explanation: data.explanation, error: "" });
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Unable to contact the AI service.";
+      setAiState({ wardId, explanation: "", error: message });
     } finally {
       setAiLoading(false);
     }

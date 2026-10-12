@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import CoefficientSparkline from "./CoefficientSparkline";
@@ -97,14 +97,19 @@ export default function WardDetail({
   const areas = areasForWard(ward.ward_id);
   const topDriver = profile ? describeTopDriver(profile) : null;
 
-  const [aiExplanation, setAiExplanation] = useState("");
+  const [aiState, setAiState] = useState<{
+    wardId: string;
+    explanation: string;
+    error: string;
+  }>({
+    wardId: ward.ward_id,
+    explanation: "",
+    error: "",
+  });
   const [aiLoading, setAiLoading] = useState(false);
-  const [aiError, setAiError] = useState("");
 
-  useEffect(() => {
-    setAiExplanation("");
-    setAiError("");
-  }, [ward.ward_id]);
+  const aiExplanation = aiState.wardId === ward.ward_id ? aiState.explanation : "";
+  const aiError = aiState.wardId === ward.ward_id ? aiState.error : "";
 
   const selectedLocality = {
     name: areas.length > 0 ? `${ward.ward_id} (${areas.join(", ")})` : ward.ward_id,
@@ -127,8 +132,7 @@ export default function WardDetail({
 
   async function explainHeatRisk(locality: typeof selectedLocality) {
     setAiLoading(true);
-    setAiError("");
-    setAiExplanation("");
+    setAiState({ wardId: ward.ward_id, explanation: "", error: "" });
 
     try {
       const response = await fetch(
@@ -154,9 +158,10 @@ export default function WardDetail({
         throw new Error(data.error || "Request failed");
       }
 
-      setAiExplanation(data.explanation);
-    } catch (error: any) {
-      setAiError(error.message || "Unable to contact the AI service.");
+      setAiState({ wardId: ward.ward_id, explanation: data.explanation, error: "" });
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Unable to contact the AI service.";
+      setAiState({ wardId: ward.ward_id, explanation: "", error: message });
     } finally {
       setAiLoading(false);
     }
