@@ -8,6 +8,43 @@ if (!API_KEY) {
   console.warn("WARNING: EXPLABS_API_KEY is not defined in .env");
 }
 
+let serverWeatherCache = null;
+
+async function getCachedLiveWeather() {
+  const now = Date.now();
+  if (serverWeatherCache && now - serverWeatherCache.fetchedAt < 300_000) {
+    return serverWeatherCache;
+  }
+  const key = process.env.OPENWEATHER_API_KEY;
+  if (!key) {
+    throw new Error("OPENWEATHER_API_KEY is not defined in environment");
+  }
+
+  try {
+    const res = await fetch(
+      "https://api.openweathermap.org/data/2.5/weather?q=Nagpur,IN&units=metric&appid=" + key,
+      { signal: AbortSignal.timeout(5000) }
+    );
+    if (!res.ok) {
+      throw new Error(`OpenWeatherMap returned status ${res.status}`);
+    }
+    const data = await res.json();
+    serverWeatherCache = {
+      temp: data.main.temp,
+      feels_like: data.main.feels_like,
+      fetchedAt: now,
+      city: data.name || "Nagpur",
+      stale: false,
+    };
+    return serverWeatherCache;
+  } catch (err) {
+    if (serverWeatherCache) {
+      return { ...serverWeatherCache, stale: true };
+    }
+    throw err;
+  }
+}
+
 const server = http.createServer(async (req, res) => {
   // CORS headers
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -25,6 +62,18 @@ const server = http.createServer(async (req, res) => {
   if (req.method === "GET" && url.pathname === "/health") {
     res.writeHead(200, { "Content-Type": "application/json" });
     res.end(JSON.stringify({ status: "ok" }));
+    return;
+  }
+
+  if (req.method === "GET" && url.pathname === "/api/weather") {
+    try {
+      const data = await getCachedLiveWeather();
+      res.writeHead(200, { "Content-Type": "application/json", "Cache-Control": "no-store" });
+      res.end(JSON.stringify({ ok: true, data, stale: data.stale ?? false }));
+    } catch (err) {
+      res.writeHead(503, { "Content-Type": "application/json", "Cache-Control": "no-store" });
+      res.end(JSON.stringify({ ok: false, data: null, error: err.message || "Weather unavailable" }));
+    }
     return;
   }
 
