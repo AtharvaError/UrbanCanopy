@@ -43,6 +43,12 @@ All notable changes to this project are documented here. Format based on
   reads as a chart of the ranking.
 - A card that follows the pointer over the map with the locality's band, score,
   rank, main driver and four measured values.
+- A live heat outlook on the dashboard: Nagpur's air temperature, "feels like"
+  and humidity now, and the next four days' forecast highs, from Open-Meteo. The
+  hottest day sets an alert level by stated thresholds (40, 45 and 47°C), and on
+  an alert day the bar names the three highest-ranked Critical or High
+  localities, each opening its planner. Weather never enters the score. When
+  the service cannot be reached the bar says so and shows no number.
 - Locality types. The data build clusters the localities with k-means on their
   standardised indicators, with a fixed seed so the result is reproducible, and
   publishes the types with the figures behind the choice of k. Nagpur has three:

@@ -30,6 +30,7 @@ prediction, and **not** an official Nagpur Municipal Corporation tool.
 | **Zone calculator** | Pick 3 to 5 localities, edit any indicator, drag any weight. Score, band and rank update as you type. |
 | **How the score works** | The formula in one line, each weight, the bands, and six assumptions and limits. |
 | **Kinds of locality** | K-means groups the localities into three types, so two that score alike for opposite reasons are told apart. |
+| **Live heat outlook** | Nagpur's air temperature now and the next four days' highs, live from Open-Meteo. On a day the forecast reaches 40°C or more, the dashboard names the localities to act in first. |
 | **Scenario builder** | Apply tree canopy, cool roofs and pocket parks to several localities and compare before-and-after maps. |
 
 ## The score in one line
@@ -126,7 +127,7 @@ cd frontend
 npm test
 ```
 
-289 tests for the site. The data build has its own, including one that feeds Mumbai's
+303 tests for the site. The data build has its own, including one that feeds Mumbai's
 original inputs through the scoring code and requires the original project's published
 scores back exactly:
 
@@ -148,7 +149,7 @@ config/cities/    One JSON file per city: bounding box, grid size, season
 data/nagpur/      Nagpur's built dataset
 data/             Mumbai's original dataset, kept as the scoring reference
 docs/             Method notes from the original project
-PRD.md            Product requirements, and how the app maps to the hackathon brief
+docs/PRD.md       Product requirements, and how the app maps to the hackathon brief
 ```
 
 ## Assumptions and limits
@@ -159,6 +160,11 @@ Stated in the app as well, on the calculator page.
   predict illness or temperature.
 - **Surface, not air.** Heat is land surface temperature from satellite, which is the
   temperature of roofs, roads and soil.
+- **Live weather does not change the score.** It is one reading for the whole city, so
+  it cannot rank localities. The score says where to act; the forecast says when. The
+  alert uses the India Meteorological Department's criteria on actual temperature (45°C
+  a heat wave, 47°C a severe one); 40 to 45°C is shown as a "heat watch", which is this
+  tool's own label and not an official declaration.
 - **Localities are approximate.** No open map of Nagpur's municipal zones or wards
   exists, so each cell is grouped with the nearest named place from OpenStreetMap.
   They are not administrative boundaries.

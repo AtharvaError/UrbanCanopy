@@ -8,6 +8,7 @@ import WardPanel from "../components/WardPanel";
 import WardCompare from "../components/WardCompare";
 import SiteHeader from "../components/SiteHeader";
 import DataVintageBar from "../components/DataVintageBar";
+import HeatOutlookBar from "../components/HeatOutlookBar";
 import {
   parseWardParam,
   readStoredWards,
@@ -213,6 +214,7 @@ function DashboardContent() {
     <div className="flex h-screen flex-col bg-background">
       {!isFullscreen && <SiteHeader compact />}
       {!isFullscreen && <FirstVisitHint />}
+      {!isFullscreen && <HeatOutlookBar onSelectWard={selectWard} />}
       <main className="relative flex flex-1 overflow-hidden">
         <div className="dashboard-map relative flex-1">
           <WardChoropleth

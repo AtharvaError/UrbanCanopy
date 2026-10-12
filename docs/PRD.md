@@ -89,6 +89,7 @@ and they do not say what to do.
 | F13 | Ranking bars | A bar per locality in the ranked list, on one 0 to 100 scale. | Should | Built |
 | F14 | Map hover card | Band, score, rank, main driver and four measured values under the pointer. | Should | Built |
 | F15 | Kinds of locality | K-means groups the 30 localities into types by their five indicators. Shown on the calculator page, in the planner and on the hover card. | Should | Built |
+| F16 | Live heat outlook | Live air temperature and four-day forecast highs from Open-Meteo on the dashboard. A stated threshold rule turns the hottest day into an alert level and names the localities to act in first. Weather never changes a score. | Should | Built |
 
 Removed in this version at the owner's request: the Methodology, Mission,
 Contribute and Contact pages. Method notes now live in `docs/` only.
@@ -254,9 +255,10 @@ after that point has not been checked.
 | Scenario builder on Nagpur data | Done |
 | Mapbox basemap | Done |
 | Methodology, Mission, Contribute, Contact pages | Removed |
-| Automated tests updated for Nagpur (289 passing, plus 14 for the data build) | Done |
+| Automated tests updated for Nagpur (303 passing, plus 14 for the data build) | Done |
 | Zone calculator, score card, people-focused suggestions, ranking bars, hover card | Done |
 | K-means locality types | Done |
+| Live heat outlook on the dashboard | Done |
 | README rewritten for UrbanCanopy and Nagpur | Done |
 | Remaining sections of the planner brief | Waiting on the full brief |
 
