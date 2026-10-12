@@ -1,0 +1,41 @@
+{
+  "_generated": "Mirror of config/cities/. Do not edit; run pipeline/sync_city_config.py.",
+  "slug": "nagpur",
+  "name": "Nagpur",
+  "country": "India",
+  "timezone": "Asia/Kolkata",
+  "bbox": [
+    78.98,
+    21.04,
+    79.2,
+    21.25
+  ],
+  "boundaries": {
+    "file": "nagpur_localities.geojson",
+    "ward_id_field": "name",
+    "source": "Approximate localities: a Voronoi partition of the OpenStreetMap municipal outline (relation 12969115) around named OSM anchor points. Not NMC zones or prabhags; see pipeline/open/01_localities.mjs.",
+    "source_url": "https://www.openstreetmap.org/relation/12969115",
+    "expected_ward_count": 30
+  },
+  "grid": {
+    "cell_size_m": 500
+  },
+  "imagery": {
+    "source": "open",
+    "season_start_month": 3,
+    "season_end_month": 5,
+    "notes": "March to May is Nagpur's hot season: the months heat harms people, and reliably cloud-free ahead of the June monsoon. Mumbai's November to February window would describe a mild winter here."
+  },
+  "map": {
+    "center": [
+      21.1458,
+      79.0882
+    ],
+    "zoom": 12
+  },
+  "ecology": {
+    "biome": "Central Indian tropical dry deciduous forest and savanna (Deccan plateau)",
+    "calibrated": false,
+    "notes": "NOT calibrated. The plantability filter still encodes Mumbai's coastal ecology. Central India has genuinely native open habitats (savanna, scrub, grassland) that ESA WorldCover often labels cropland, shrubland or bare ground rather than class 30, so the filter can mark them plantable. Treat plantability here as a land-cover screen, not ecological clearance, until someone reviews it against Deccan restoration literature. See docs/calibrating-ecology.md."
+  }
+}

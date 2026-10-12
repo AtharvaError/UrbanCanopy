@@ -1,0 +1,338 @@
+[
+  {
+    "ward_id": "Bhandewadi",
+    "intervention": "Rain gardens + water-sensitive urban design (WSUD)",
+    "rationale": "Highly impervious cell near mapped water/wetland: runoff and heat compound risk",
+    "citation": "Methodology proxy: WorldCover water-distance < 500m (no dedicated hydrology layer in P0)",
+    "priority": 2,
+    "cell_count": 6
+  },
+  {
+    "ward_id": "Byramji Town",
+    "intervention": "Pocket parks",
+    "rationale": "High population density with little existing green/open space",
+    "citation": "C40 Urban Cooling Toolbox",
+    "priority": 3,
+    "cell_count": 1
+  },
+  {
+    "ward_id": "Dharampeth",
+    "intervention": "Rain gardens + water-sensitive urban design (WSUD)",
+    "rationale": "Highly impervious cell near mapped water/wetland: runoff and heat compound risk",
+    "citation": "Methodology proxy: WorldCover water-distance < 500m (no dedicated hydrology layer in P0)",
+    "priority": 2,
+    "cell_count": 1
+  },
+  {
+    "ward_id": "Friends Colony",
+    "intervention": "Cool roofs + reflective pavements + cooling centres",
+    "rationale": "High vulnerability, low canopy, but native-grassland/built-up cell: afforestation would backfire ecologically",
+    "citation": "Veldman et al. 2019, Science (response to Bastin 2019)",
+    "priority": 1,
+    "cell_count": 1
+  },
+  {
+    "ward_id": "Hudkeshwar",
+    "intervention": "Cool roofs + reflective pavements + cooling centres",
+    "rationale": "High vulnerability, low canopy, but native-grassland/built-up cell: afforestation would backfire ecologically",
+    "citation": "Veldman et al. 2019, Science (response to Bastin 2019)",
+    "priority": 1,
+    "cell_count": 6
+  },
+  {
+    "ward_id": "Hudkeshwar",
+    "intervention": "Pocket parks",
+    "rationale": "High population density with little existing green/open space",
+    "citation": "C40 Urban Cooling Toolbox",
+    "priority": 3,
+    "cell_count": 2
+  },
+  {
+    "ward_id": "Indora",
+    "intervention": "Cool roofs + reflective pavements + cooling centres",
+    "rationale": "High vulnerability, low canopy, but native-grassland/built-up cell: afforestation would backfire ecologically",
+    "citation": "Veldman et al. 2019, Science (response to Bastin 2019)",
+    "priority": 1,
+    "cell_count": 8
+  },
+  {
+    "ward_id": "Indora",
+    "intervention": "Pocket parks",
+    "rationale": "High population density with little existing green/open space",
+    "citation": "C40 Urban Cooling Toolbox",
+    "priority": 3,
+    "cell_count": 7
+  },
+  {
+    "ward_id": "Itwari",
+    "intervention": "Cool roofs + reflective pavements + cooling centres",
+    "rationale": "High vulnerability, low canopy, but native-grassland/built-up cell: afforestation would backfire ecologically",
+    "citation": "Veldman et al. 2019, Science (response to Bastin 2019)",
+    "priority": 1,
+    "cell_count": 12
+  },
+  {
+    "ward_id": "Itwari",
+    "intervention": "Rain gardens + water-sensitive urban design (WSUD)",
+    "rationale": "Highly impervious cell near mapped water/wetland: runoff and heat compound risk",
+    "citation": "Methodology proxy: WorldCover water-distance < 500m (no dedicated hydrology layer in P0)",
+    "priority": 2,
+    "cell_count": 3
+  },
+  {
+    "ward_id": "Itwari",
+    "intervention": "Pocket parks",
+    "rationale": "High population density with little existing green/open space",
+    "citation": "C40 Urban Cooling Toolbox",
+    "priority": 3,
+    "cell_count": 12
+  },
+  {
+    "ward_id": "Jaripatka",
+    "intervention": "Cool roofs + reflective pavements + cooling centres",
+    "rationale": "High vulnerability, low canopy, but native-grassland/built-up cell: afforestation would backfire ecologically",
+    "citation": "Veldman et al. 2019, Science (response to Bastin 2019)",
+    "priority": 1,
+    "cell_count": 5
+  },
+  {
+    "ward_id": "Jaripatka",
+    "intervention": "Rain gardens + water-sensitive urban design (WSUD)",
+    "rationale": "Highly impervious cell near mapped water/wetland: runoff and heat compound risk",
+    "citation": "Methodology proxy: WorldCover water-distance < 500m (no dedicated hydrology layer in P0)",
+    "priority": 2,
+    "cell_count": 6
+  },
+  {
+    "ward_id": "Jaripatka",
+    "intervention": "Pocket parks",
+    "rationale": "High population density with little existing green/open space",
+    "citation": "C40 Urban Cooling Toolbox",
+    "priority": 3,
+    "cell_count": 4
+  },
+  {
+    "ward_id": "Kalamna",
+    "intervention": "Cool roofs + reflective pavements + cooling centres",
+    "rationale": "High vulnerability, low canopy, but native-grassland/built-up cell: afforestation would backfire ecologically",
+    "citation": "Veldman et al. 2019, Science (response to Bastin 2019)",
+    "priority": 1,
+    "cell_count": 3
+  },
+  {
+    "ward_id": "Khamla",
+    "intervention": "Rain gardens + water-sensitive urban design (WSUD)",
+    "rationale": "Highly impervious cell near mapped water/wetland: runoff and heat compound risk",
+    "citation": "Methodology proxy: WorldCover water-distance < 500m (no dedicated hydrology layer in P0)",
+    "priority": 2,
+    "cell_count": 3
+  },
+  {
+    "ward_id": "Mahal",
+    "intervention": "Cool roofs + reflective pavements + cooling centres",
+    "rationale": "High vulnerability, low canopy, but native-grassland/built-up cell: afforestation would backfire ecologically",
+    "citation": "Veldman et al. 2019, Science (response to Bastin 2019)",
+    "priority": 1,
+    "cell_count": 5
+  },
+  {
+    "ward_id": "Mahal",
+    "intervention": "Rain gardens + water-sensitive urban design (WSUD)",
+    "rationale": "Highly impervious cell near mapped water/wetland: runoff and heat compound risk",
+    "citation": "Methodology proxy: WorldCover water-distance < 500m (no dedicated hydrology layer in P0)",
+    "priority": 2,
+    "cell_count": 4
+  },
+  {
+    "ward_id": "Mahal",
+    "intervention": "Pocket parks",
+    "rationale": "High population density with little existing green/open space",
+    "citation": "C40 Urban Cooling Toolbox",
+    "priority": 3,
+    "cell_count": 3
+  },
+  {
+    "ward_id": "Manewada",
+    "intervention": "Cool roofs + reflective pavements + cooling centres",
+    "rationale": "High vulnerability, low canopy, but native-grassland/built-up cell: afforestation would backfire ecologically",
+    "citation": "Veldman et al. 2019, Science (response to Bastin 2019)",
+    "priority": 1,
+    "cell_count": 10
+  },
+  {
+    "ward_id": "Manewada",
+    "intervention": "Pocket parks",
+    "rationale": "High population density with little existing green/open space",
+    "citation": "C40 Urban Cooling Toolbox",
+    "priority": 3,
+    "cell_count": 8
+  },
+  {
+    "ward_id": "Medical Square",
+    "intervention": "Rain gardens + water-sensitive urban design (WSUD)",
+    "rationale": "Highly impervious cell near mapped water/wetland: runoff and heat compound risk",
+    "citation": "Methodology proxy: WorldCover water-distance < 500m (no dedicated hydrology layer in P0)",
+    "priority": 2,
+    "cell_count": 2
+  },
+  {
+    "ward_id": "Mominpura",
+    "intervention": "Cool roofs + reflective pavements + cooling centres",
+    "rationale": "High vulnerability, low canopy, but native-grassland/built-up cell: afforestation would backfire ecologically",
+    "citation": "Veldman et al. 2019, Science (response to Bastin 2019)",
+    "priority": 1,
+    "cell_count": 3
+  },
+  {
+    "ward_id": "Mominpura",
+    "intervention": "Rain gardens + water-sensitive urban design (WSUD)",
+    "rationale": "Highly impervious cell near mapped water/wetland: runoff and heat compound risk",
+    "citation": "Methodology proxy: WorldCover water-distance < 500m (no dedicated hydrology layer in P0)",
+    "priority": 2,
+    "cell_count": 2
+  },
+  {
+    "ward_id": "Mominpura",
+    "intervention": "Pocket parks",
+    "rationale": "High population density with little existing green/open space",
+    "citation": "C40 Urban Cooling Toolbox",
+    "priority": 3,
+    "cell_count": 4
+  },
+  {
+    "ward_id": "Nandanvan",
+    "intervention": "Cool roofs + reflective pavements + cooling centres",
+    "rationale": "High vulnerability, low canopy, but native-grassland/built-up cell: afforestation would backfire ecologically",
+    "citation": "Veldman et al. 2019, Science (response to Bastin 2019)",
+    "priority": 1,
+    "cell_count": 7
+  },
+  {
+    "ward_id": "Nandanvan",
+    "intervention": "Rain gardens + water-sensitive urban design (WSUD)",
+    "rationale": "Highly impervious cell near mapped water/wetland: runoff and heat compound risk",
+    "citation": "Methodology proxy: WorldCover water-distance < 500m (no dedicated hydrology layer in P0)",
+    "priority": 2,
+    "cell_count": 7
+  },
+  {
+    "ward_id": "Nandanvan",
+    "intervention": "Pocket parks",
+    "rationale": "High population density with little existing green/open space",
+    "citation": "C40 Urban Cooling Toolbox",
+    "priority": 3,
+    "cell_count": 4
+  },
+  {
+    "ward_id": "Rameshwari",
+    "intervention": "Cool roofs + reflective pavements + cooling centres",
+    "rationale": "High vulnerability, low canopy, but native-grassland/built-up cell: afforestation would backfire ecologically",
+    "citation": "Veldman et al. 2019, Science (response to Bastin 2019)",
+    "priority": 1,
+    "cell_count": 5
+  },
+  {
+    "ward_id": "Rameshwari",
+    "intervention": "Pocket parks",
+    "rationale": "High population density with little existing green/open space",
+    "citation": "C40 Urban Cooling Toolbox",
+    "priority": 3,
+    "cell_count": 4
+  },
+  {
+    "ward_id": "Sakkardara",
+    "intervention": "Cool roofs + reflective pavements + cooling centres",
+    "rationale": "High vulnerability, low canopy, but native-grassland/built-up cell: afforestation would backfire ecologically",
+    "citation": "Veldman et al. 2019, Science (response to Bastin 2019)",
+    "priority": 1,
+    "cell_count": 2
+  },
+  {
+    "ward_id": "Sakkardara",
+    "intervention": "Pocket parks",
+    "rationale": "High population density with little existing green/open space",
+    "citation": "C40 Urban Cooling Toolbox",
+    "priority": 3,
+    "cell_count": 2
+  },
+  {
+    "ward_id": "Shanti Nagar",
+    "intervention": "Cool roofs + reflective pavements + cooling centres",
+    "rationale": "High vulnerability, low canopy, but native-grassland/built-up cell: afforestation would backfire ecologically",
+    "citation": "Veldman et al. 2019, Science (response to Bastin 2019)",
+    "priority": 1,
+    "cell_count": 10
+  },
+  {
+    "ward_id": "Shanti Nagar",
+    "intervention": "Rain gardens + water-sensitive urban design (WSUD)",
+    "rationale": "Highly impervious cell near mapped water/wetland: runoff and heat compound risk",
+    "citation": "Methodology proxy: WorldCover water-distance < 500m (no dedicated hydrology layer in P0)",
+    "priority": 2,
+    "cell_count": 2
+  },
+  {
+    "ward_id": "Shanti Nagar",
+    "intervention": "Pocket parks",
+    "rationale": "High population density with little existing green/open space",
+    "citation": "C40 Urban Cooling Toolbox",
+    "priority": 3,
+    "cell_count": 5
+  },
+  {
+    "ward_id": "Sitabuldi",
+    "intervention": "Cool roofs + reflective pavements + cooling centres",
+    "rationale": "High vulnerability, low canopy, but native-grassland/built-up cell: afforestation would backfire ecologically",
+    "citation": "Veldman et al. 2019, Science (response to Bastin 2019)",
+    "priority": 1,
+    "cell_count": 1
+  },
+  {
+    "ward_id": "Sitabuldi",
+    "intervention": "Pocket parks",
+    "rationale": "High population density with little existing green/open space",
+    "citation": "C40 Urban Cooling Toolbox",
+    "priority": 3,
+    "cell_count": 1
+  },
+  {
+    "ward_id": "Sonegaon",
+    "intervention": "Cool roofs + reflective pavements + cooling centres",
+    "rationale": "High vulnerability, low canopy, but native-grassland/built-up cell: afforestation would backfire ecologically",
+    "citation": "Veldman et al. 2019, Science (response to Bastin 2019)",
+    "priority": 1,
+    "cell_count": 2
+  },
+  {
+    "ward_id": "Sonegaon",
+    "intervention": "Native tree planting + green corridors",
+    "rationale": "High vulnerability, low canopy, ecologically suitable for restoration",
+    "citation": "Bastin et al. 2019, Science",
+    "priority": 1,
+    "cell_count": 2
+  },
+  {
+    "ward_id": "Trimurti Nagar",
+    "intervention": "Cool roofs + reflective pavements + cooling centres",
+    "rationale": "High vulnerability, low canopy, but native-grassland/built-up cell: afforestation would backfire ecologically",
+    "citation": "Veldman et al. 2019, Science (response to Bastin 2019)",
+    "priority": 1,
+    "cell_count": 5
+  },
+  {
+    "ward_id": "Yashodhara Nagar",
+    "intervention": "Cool roofs + reflective pavements + cooling centres",
+    "rationale": "High vulnerability, low canopy, but native-grassland/built-up cell: afforestation would backfire ecologically",
+    "citation": "Veldman et al. 2019, Science (response to Bastin 2019)",
+    "priority": 1,
+    "cell_count": 4
+  },
+  {
+    "ward_id": "Yashodhara Nagar",
+    "intervention": "Rain gardens + water-sensitive urban design (WSUD)",
+    "rationale": "Highly impervious cell near mapped water/wetland: runoff and heat compound risk",
+    "citation": "Methodology proxy: WorldCover water-distance < 500m (no dedicated hydrology layer in P0)",
+    "priority": 2,
+    "cell_count": 5
+  }
+]

@@ -1,0 +1,356 @@
+{
+  "_about": "Anchor points for build_localities.py. Each is a well-known Nagpur locality placed on an OpenStreetMap feature that carries its name, found with Nominatim on 2026-10-12. Order is priority: when two anchors are closer than the minimum spacing, the earlier one is kept. These are not administrative units; see pipeline/build_localities.py.",
+  "source": "OpenStreetMap contributors, ODbL, via Nominatim",
+  "anchors": [
+    {
+      "name": "Sitabuldi",
+      "lat": 21.1425413,
+      "lon": 79.0796106,
+      "osm_feature": "way/463506598",
+      "osm_match": "Sitabuldi City Bus Stand (amenity/bus_station)"
+    },
+    {
+      "name": "Sadar",
+      "lat": 21.1590894,
+      "lon": 79.0795636,
+      "osm_feature": "way/766190654",
+      "osm_match": "Sadar Flyover (highway/trunk)"
+    },
+    {
+      "name": "Dharampeth",
+      "lat": 21.1409684,
+      "lon": 79.0624344,
+      "osm_feature": "node/4584518730",
+      "osm_match": "Dharampeth (place/suburb)"
+    },
+    {
+      "name": "Mahal",
+      "lat": 21.1429969,
+      "lon": 79.1101819,
+      "osm_feature": "node/8181804732",
+      "osm_match": "Mahal (place/suburb)"
+    },
+    {
+      "name": "Itwari",
+      "lat": 21.1569338,
+      "lon": 79.1102582,
+      "osm_feature": "node/8327285855",
+      "osm_match": "Itwari (place/suburb)"
+    },
+    {
+      "name": "Seminary Hills",
+      "lat": 21.1685242,
+      "lon": 79.0625411,
+      "osm_feature": "node/3201718994",
+      "osm_match": "Seminary Hills (place/suburb)"
+    },
+    {
+      "name": "Dhantoli",
+      "lat": 21.1339435,
+      "lon": 79.0805662,
+      "osm_feature": "node/4584518732",
+      "osm_match": "Dhantoli (place/suburb)"
+    },
+    {
+      "name": "Mominpura",
+      "lat": 21.1561406,
+      "lon": 79.0962708,
+      "osm_feature": "node/4584469998",
+      "osm_match": "Mominpura (place/suburb)"
+    },
+    {
+      "name": "Kalamna",
+      "lat": 21.1678546,
+      "lon": 79.1409074,
+      "osm_feature": "node/2100210203",
+      "osm_match": "Kalamna (railway/station)"
+    },
+    {
+      "name": "Jaripatka",
+      "lat": 21.1894926,
+      "lon": 79.0853234,
+      "osm_feature": "way/314731413",
+      "osm_match": "Jaripatka Road (highway/tertiary)"
+    },
+    {
+      "name": "Indora",
+      "lat": 21.1736873,
+      "lon": 79.1007283,
+      "osm_feature": "node/7944686882",
+      "osm_match": "Indora Square (railway/station)"
+    },
+    {
+      "name": "Gorewada",
+      "lat": 21.1970185,
+      "lon": 79.0387387,
+      "osm_feature": "way/44430029",
+      "osm_match": "Gorewada lake (natural/water)"
+    },
+    {
+      "name": "Friends Colony",
+      "lat": 21.1784942,
+      "lon": 79.0453187,
+      "osm_feature": "node/11576006643",
+      "osm_match": "Friends Colony Bus Stop (highway/bus_stop)"
+    },
+    {
+      "name": "Ambazari",
+      "lat": 21.1286919,
+      "lon": 79.0457448,
+      "osm_feature": "node/11371112354",
+      "osm_match": "Ambazari Lake (railway/station)"
+    },
+    {
+      "name": "Jaitala",
+      "lat": 21.1198761,
+      "lon": 79.0384201,
+      "osm_feature": "way/27211286",
+      "osm_match": "Jaitala Road (highway/secondary)"
+    },
+    {
+      "name": "Pratap Nagar",
+      "lat": 21.1137148,
+      "lon": 79.0567838,
+      "osm_feature": "node/8913989976",
+      "osm_match": "Pratap Nagar Square (place/square)"
+    },
+    {
+      "name": "Khamla",
+      "lat": 21.1034195,
+      "lon": 79.0670489,
+      "osm_feature": "way/264880729",
+      "osm_match": "Khamla cricket ground (landuse/recreation_ground)"
+    },
+    {
+      "name": "Laxmi Nagar",
+      "lat": 21.1254686,
+      "lon": 79.0639778,
+      "osm_feature": "node/4195621401",
+      "osm_match": "Laxmi Nagar Square (junction/intersection)"
+    },
+    {
+      "name": "Manish Nagar",
+      "lat": 21.0934921,
+      "lon": 79.0675143,
+      "osm_feature": "way/1126641142",
+      "osm_match": "Manish Nagar Flyover (highway/primary)"
+    },
+    {
+      "name": "Narendra Nagar",
+      "lat": 21.1066763,
+      "lon": 79.0783769,
+      "osm_feature": "node/4984611435",
+      "osm_match": "NIT park Narendra nagar (leisure/park)"
+    },
+    {
+      "name": "Manewada",
+      "lat": 21.108635,
+      "lon": 79.1035461,
+      "osm_feature": "way/304643780",
+      "osm_match": "Manewada Road (highway/tertiary)"
+    },
+    {
+      "name": "Hudkeshwar",
+      "lat": 21.1102206,
+      "lon": 79.1173141,
+      "osm_feature": "way/143273091",
+      "osm_match": "Hudkeshwar Road (highway/secondary)"
+    },
+    {
+      "name": "Nandanvan",
+      "lat": 21.1375622,
+      "lon": 79.1226825,
+      "osm_feature": "node/7908231915",
+      "osm_match": "Nandanvan (place/neighbourhood)"
+    },
+    {
+      "name": "Sakkardara",
+      "lat": 21.1219423,
+      "lon": 79.1152793,
+      "osm_feature": "way/189372918",
+      "osm_match": "Sakkardara Lake (natural/water)"
+    },
+    {
+      "name": "Dighori",
+      "lat": 21.1186218,
+      "lon": 79.1252932,
+      "osm_feature": "node/4406865103",
+      "osm_match": "State Bank of India Dighori (amenity/bank)"
+    },
+    {
+      "name": "Bhandewadi",
+      "lat": 21.1412704,
+      "lon": 79.1593175,
+      "osm_feature": "node/2907529361",
+      "osm_match": "Bhandewadi Halt (railway/halt)"
+    },
+    {
+      "name": "Nari",
+      "lat": 21.1795001,
+      "lon": 79.1097781,
+      "osm_feature": "node/7944685685",
+      "osm_match": "Nari Road (railway/station)"
+    },
+    {
+      "name": "Sonegaon",
+      "lat": 21.1003727,
+      "lon": 79.052343,
+      "osm_feature": "way/246262221",
+      "osm_match": "Sonegaon Lake (water/lake)"
+    },
+    {
+      "name": "Gittikhadan",
+      "lat": 21.1750177,
+      "lon": 79.0608479,
+      "osm_feature": "way/1119416881",
+      "osm_match": "Gittikhadan road (highway/residential)"
+    },
+    {
+      "name": "Ajni",
+      "lat": 21.1269226,
+      "lon": 79.0825751,
+      "osm_feature": "node/297649087",
+      "osm_match": "Ajni (railway/station)"
+    },
+    {
+      "name": "Yashodhara Nagar",
+      "lat": 21.1846988,
+      "lon": 79.1261415,
+      "osm_feature": "node/12596234750",
+      "osm_match": "yashodhara nagar primary school (office/educational_institution)"
+    },
+    {
+      "name": "Pachpaoli",
+      "lat": 21.164244,
+      "lon": 79.1027926,
+      "osm_feature": "node/3259546111",
+      "osm_match": "Police Station Pachpaoli (amenity/police)"
+    },
+    {
+      "name": "Mankapur",
+      "lat": 21.1878071,
+      "lon": 79.0790929,
+      "osm_feature": "way/1287998022",
+      "osm_match": "Mankapur Square (highway/trunk)"
+    },
+    {
+      "name": "Shanti Nagar",
+      "lat": 21.159094,
+      "lon": 79.126273,
+      "osm_feature": "node/7226796675",
+      "osm_match": "UPHC (healthcare/centre)"
+    },
+    {
+      "name": "Futala",
+      "lat": 21.1490412,
+      "lon": 79.040821,
+      "osm_feature": "node/11045984938",
+      "osm_match": "Futala Square (highway/traffic_signals)"
+    },
+    {
+      "name": "Ravi Nagar",
+      "lat": 21.1482706,
+      "lon": 79.0546679,
+      "osm_feature": "node/5966013224",
+      "osm_match": "Ravi Nagar (place/neighbourhood)"
+    },
+    {
+      "name": "Automotive Square",
+      "lat": 21.1857923,
+      "lon": 79.1195065,
+      "osm_feature": "node/7944685834",
+      "osm_match": "Automotive Square (railway/station)"
+    },
+    {
+      "name": "Mihan",
+      "lat": 21.0616937,
+      "lon": 79.0460178,
+      "osm_feature": "way/591915290",
+      "osm_match": "Mihan Multi-Modal Logistic Park (MMLP) (landuse/industrial)"
+    },
+    {
+      "name": "Khapri",
+      "lat": 21.0493478,
+      "lon": 79.0478446,
+      "osm_feature": "node/11368300696",
+      "osm_match": "Khapri (railway/station)"
+    },
+    {
+      "name": "Reshimbagh",
+      "lat": 21.1329601,
+      "lon": 79.1079853,
+      "osm_feature": "way/503958952",
+      "osm_match": "Reshimbagh Rd (highway/secondary)"
+    },
+    {
+      "name": "Gandhibagh",
+      "lat": 21.1543273,
+      "lon": 79.1058527,
+      "osm_feature": "node/7079665735",
+      "osm_match": "Vyas Hospital (amenity/hospital)"
+    },
+    {
+      "name": "Medical Square",
+      "lat": 21.1314468,
+      "lon": 79.0977229,
+      "osm_feature": "way/143281373",
+      "osm_match": "Medical Square (highway/secondary)"
+    },
+    {
+      "name": "Rameshwari",
+      "lat": 21.1182943,
+      "lon": 79.0938514,
+      "osm_feature": "way/27168810",
+      "osm_match": "Rameshwari Road (highway/secondary)"
+    },
+    {
+      "name": "Mhalgi Nagar",
+      "lat": 21.106958,
+      "lon": 79.1223123,
+      "osm_feature": "way/743671468",
+      "osm_match": "Mhalgi Nagar Park (leisure/park)"
+    },
+    {
+      "name": "Byramji Town",
+      "lat": 21.1725703,
+      "lon": 79.0829949,
+      "osm_feature": "node/4584423785",
+      "osm_match": "Byramji Town (place/neighbourhood)"
+    },
+    {
+      "name": "Vaishali Nagar",
+      "lat": 21.1683258,
+      "lon": 79.1097002,
+      "osm_feature": "way/914950834",
+      "osm_match": "Vaishali Nagar Ground (landuse/recreation_ground)"
+    },
+    {
+      "name": "Trimurti Nagar",
+      "lat": 21.1131642,
+      "lon": 79.042658,
+      "osm_feature": "way/259175822",
+      "osm_match": "Trimurti Nagar Garden (leisure/garden)"
+    },
+    {
+      "name": "Besa",
+      "lat": 21.0847512,
+      "lon": 79.09447,
+      "osm_feature": "node/7795994339",
+      "osm_match": "Besa (place/neighbourhood)"
+    },
+    {
+      "name": "Wadi",
+      "lat": 21.1491394,
+      "lon": 78.9777061,
+      "osm_feature": "node/5852295118",
+      "osm_match": "Wadi (place/village)"
+    },
+    {
+      "name": "Pipla",
+      "lat": 21.0815978,
+      "lon": 79.1203694,
+      "osm_feature": "node/7795994338",
+      "osm_match": "Pipla (place/village)"
+    }
+  ]
+}

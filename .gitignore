@@ -1,0 +1,107 @@
+# Node / Next.js
+node_modules/
+.next/
+out/
+.vercel/
+*.tsbuildinfo
+next-env.d.ts
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+*.egg-info/
+.ipynb_checkpoints/
+
+# osmnx HTTP response cache (regenerable, not source data)
+pipeline/cache/
+
+# Natural Earth archives downloaded by 12_hero_region.py (re-fetched on demand)
+data/cache/
+
+# ad-hoc debug dumps
+*_debug.csv
+
+# run_pipeline.py's per-run log (regenerated every refresh, not source data)
+data/pipeline_run_log.json
+
+# diff_snapshots.py's output (regenerated per refresh)
+data/pipeline_diff.json
+
+# Env / secrets
+.env
+.env.*
+!.env.example
+
+# Large rasters (GeoJSON snapshots in data/ ARE committed; raw rasters are not)
+*.tif
+*.tiff
+pipeline/outputs/
+
+# Supabase local
+supabase/.temp/
+supabase/.branches/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+
+# Session / tooling artifacts (never source)
+%TEMP%/
+.gif-frames/
+.playwright-mcp/
+frontend/.impeccable/
+*.log
+
+# Local planning (personal schedule data, never commit)
+BUILD-PLAN.md
+TODO.md
+
+# Competition-submission materials (kept local + EA copy only, not published)
+docs/UCIP-Pitch-Deck.pdf
+docs/pitch-deck.html
+docs/pitch-brief.md
+docs/prior-art.md
+
+.vercel
+
+# Embedded Python runtime (moved with the repo, never tracked)
+# Anchored to the repository root. Unanchored, this pattern matches a directory
+# named Python at any depth, and git matches ignore patterns case-insensitively
+# on Windows and macOS, so it also swallowed clients/python/ and the entire
+# Python client package was silently never committed. CI caught it by failing
+# to find a directory the commit claimed to add.
+/Python/
+
+# Cached third-party downloads (NOAA GSOD station CSVs, etc)
+pipeline/cache/gsod/
+
+# Non-default cities' pipeline output. Regenerable; only the default city's
+# data is committed, since that is what the site serves.
+data/*/
+!data/cache/
+
+# Local Claude Code skills and settings, not part of the project
+.claude/
+
+# Pitch-deck build workspace. Large binaries (a 55MB demo video, the pptx and
+# its exported PNGs) that do not belong in git history. Kept local.
+deck/
+
+# Local Supabase exports from pipeline/backup_supabase.py. Backups belong in
+# workflow artifacts, not in git history.
+backups/
+
+# MCP server build output and deps.
+mcp-server/node_modules/
+mcp-server/dist/
+
+# Client package build output
+clients/*/dist/
+clients/python/dist/
+clients/python/build/
+clients/python/src/*.egg-info/
+
+# Landsat band windows cached by pipeline/open/03_satellite.mjs: about 110 MB,
+# re-fetched on demand. Listed after the data/cache/ re-include above so it wins.
+data/cache/landsat/

@@ -1,0 +1,260 @@
+# Changelog
+
+All notable changes to this project are documented here. Format based on
+[Keep a Changelog](https://keepachangelog.com/en/1.1.0/); this project follows
+[Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+
+### Added
+- Nagpur, as the published city, under the name UrbanCanopy. 30 approximate
+  localities, a 500 m grid of 932 cells, and five indicators (surface
+  temperature, green cover, built-up share, population density, hospital
+  distance) for the March to May 2026 hot season.
+- `pipeline/open/`, an Earth Engine-free build of a city's dataset in Node, from
+  Planetary Computer, WorldPop and OpenStreetMap. Its scoring is a port of
+  stages 05, 06 and 08, held to Mumbai's published output by a test.
+- The Zone Intelligence & Action Planner: a slide-over panel for the selected
+  locality with a priority band, a score breakdown in points that sums exactly
+  to the published score, live what-if sliders, and ranked actions.
+- A scenario builder on `/simulate`, replacing the three city-wide sliders. Pick
+  localities on the map or from the list, apply tree canopy, cool roofs and
+  pocket parks, and read the estimated cooling on a before-and-after map, with
+  the recomputed score and rank for each one. It is the same cited estimator as
+  before with three stated reach rules on top: trees only in plantable cells,
+  cool roofs in proportion to a cell's impervious share, parks capped at it. The
+  interaction is modelled on the scenario view in Zephyrex21's
+  `urban-heat-mitigation`; none of its code or its trained model is used.
+- A Mapbox basemap on the dashboard when `NEXT_PUBLIC_MAPBOX_TOKEN` is set,
+  following the light or dark theme. Without a token the Esri canvas remains.
+  Place names are drawn again above the data, in solid ink, and the map moves
+  in whole zoom levels so raster lettering is never stretched.
+- A zone calculator at `/calculator`: pick three to five localities, edit any
+  indicator or drag any weight, and the score, band and rank follow. It runs the
+  published formula, so with nothing changed it shows the published scores.
+- A "How the score works" card on the same page: the formula in one line, each
+  weight, the priority bands, and six assumptions and limits. The constants it
+  needs (`weights`, `score_scale`, `indicator_stats`) are now published in
+  `ward_profiles.json`.
+- People-focused suggestions in the planner: drinking-water points, shade where
+  people wait, a midday work advisory, outreach priority and a public cool room.
+  Each has one rule, a comparison with the city average, shown under it.
+- A bar for every row of the ranked list, on one 0 to 100 scale, so the list
+  reads as a chart of the ranking.
+- A card that follows the pointer over the map with the locality's band, score,
+  rank, main driver and four measured values.
+- Locality types. The data build clusters the localities with k-means on their
+  standardised indicators, with a fixed seed so the result is reproducible, and
+  publishes the types with the figures behind the choice of k. Nagpur has three:
+  a crowded built-up core, a hot open fringe, and greener, cooler
+  neighbourhoods. They appear on the calculator page, in the planner and on the
+  hover card.
+
+### Changed
+- The README describes UrbanCanopy and Nagpur. It described UCIP and Mumbai.
+- The site reads its area names, cell size and indicator set from the published
+  data and the city config. "24 wards", "541 cells", "1 km" and the seven
+  indicators were literals in the interface.
+- The landing preview is drawn from the published areas at build time. It was a
+  screenshot of Mumbai.
+- The landing model's camera frames the city's own extent. It was sized for a
+  city twice as tall as it is wide.
+- API area ids are locality names, matched case-insensitively. `/wards` and
+  `/cells` no longer cap at Mumbai's counts.
+
+### Fixed
+- `instrumentation-client.ts` threw in development when the PostHog variables
+  were unset, which aborted the client bundle before hydration: every page
+  rendered and nothing on it responded. It now warns.
+- An API test wrote a stand-in `pipeline_run_log.json` into `frontend/public/`
+  and deleted the file afterwards, so running the tests removed the site's
+  published data-vintage record. It restores the original.
+
+### Removed
+- The Methodology, Mission, Contribute and Contact pages, and every link to
+  them. Method notes remain in `docs/`.
+- The budget scenario from `/simulate`, the footer's source link, the ward
+  dialog and the ward time-trend view, none of which the Nagpur site uses.
+- Mumbai's published snapshot from `frontend/public/`. Its dataset is unchanged
+  in `data/`.
+
+### Removed
+- The elderly share (`elderly_pct`, `contrib_elderly_pct`) and the
+  cooling-centre rule that depended on it. The only source, WorldPop's India
+  age-sex product, applies district age structure to a population raster, so
+  across Mumbai it took two meaningful values and recorded which revenue
+  district a cell is in. No ward-level 60+ source exists in the open Census
+  tables. The index now has seven indicators. This removes API fields inside
+  `v1`; the reasoning is in `docs/api.md`. Migration `0008` drops the column.
+
+### Changed
+- Every ward score and rank was recomputed without the indicator. The top five
+  is now L, C, G/N, H/E, E (was C, G/N, L, E, B). Thirteen wards changed rank,
+  by at most four places.
+- Stage 04 excludes zero-population cells explicitly. Six cells had been
+  leaving the index only because the elderly share is undefined at zero
+  population; the cell count stays 541.
+- `compare_weightings.py` also reports the comparison with the lowest-weighted
+  indicator dropped, which shows that `child_pct` accounts for nearly all of the
+  disagreement between PCA and equal weights.
+
+## [1.0.2] - 2026-09-23
+
+### Added
+- An MCP server (`mcp-server/`, publishable as `ucip-mcp`), so an assistant can
+  query ward vulnerability and cited recommendations directly. Every response
+  carries its caveats inline, because a bare ranking handed to a language model
+  comes back out as a confident recommendation with the uncertainty removed.
+
+### Changed
+- The scheduled data refresh runs twice a week rather than monthly.
+
+
+## [1.0.1] - 2026-09-23
+
+A maintenance release. No change to the published numbers: the wards, scores
+and ranks are identical to 1.0.0. What changed is what surrounds them.
+
+### Added
+- Bulk access: `GET /api/v1/export` returns the whole dataset as GeoJSON or
+  CSV in one cached request, with the feature centre as plain lon/lat columns
+  so it opens in pandas or R without a geometry library.
+- Confidence intervals for every ward score and rank, bootstrapped over the
+  541 cells (`data/hvi_uncertainty.json`). The headline result is a
+  qualification of the ranking rather than a footnote: the median 95% rank
+  interval spans about 6 places and no ward's rank is certain.
+- A comparison of the PCA weighting against the published fallback
+  (`data/weighting_comparison.json`): Kendall tau 0.913, 13 of 24 wards
+  identical, largest move 3 places. The ranking is largely insensitive to the
+  weighting choice.
+- Per-ward `dominant_factor`, `dominant_share` and `single_factor_dominated`,
+  so a ward carried by one indicator can be told apart from one scoring high
+  across all seven. On current data nothing crosses the threshold.
+- Per-IP rate limiting, an API versioning policy, and a documented deprecation
+  window.
+- A budget scenario on `/simulate`, showing which wards a fixed budget would
+  fund, under which objective, with its assumptions and limitations alongside.
+- Dashboard sharing: layer, centre, zoom and ward comparison in the URL;
+  printable ward briefs; embeddable ward cards; a city registry page.
+- Operations: a twice-weekly Supabase sync, a weekly backup, a weekly usage
+  report against the free-tier ceilings, and failure alerting that opens an
+  issue when a scheduled run breaks.
+- A boundary-source adapter layer, so a city outside India can supply
+  boundaries from OpenStreetMap or GADM rather than a Datameet file.
+- A city scaffolder that derives the UTM zone from the bounding box instead of
+  inheriting Mumbai's.
+
+### Fixed
+- `11_hero_city.py` renamed a hardcoded `name` column rather than the
+  configured `ward_id_field`. It worked only because both shipped cities use
+  that field, and would have produced no `ward_id` at all for a third.
+- Stages 14 and 15 ran, wrote committed output, and were reachable from
+  nowhere. Both are now registered in the pipeline runner.
+- Dashboard errors were logged to the console and nowhere else.
+
+### Changed
+- A data-quality gate now fails a refresh whose output is implausible, rather
+  than opening a pull request for it.
+- The pipeline records per-stage provenance: dataset ids, the composite window
+  actually queried, scene counts, and rows in and out.
+
+
+## [1.0.0] - 2026-09-18
+
+First tagged release. Nothing below is new work done for the tag; it's everything built
+since the project started, with a version number finally attached to it. The "Aug 8, 2026
+submission" line that used to sit here is gone because that deadline came and went and the
+project kept going past it.
+
+### Added
+- A fourth map layer on the dashboard, Heat grid, draws the 541-cell HVI grid directly.
+  The grid was already computed and already served over `/api/v1/cells`; only the map
+  itself was ward-polygons-only before this. Clicking a cell selects its parent ward, same
+  as clicking a ward polygon does.
+- The site now says how old its data is: a "Data vintage" note on /methodology and a
+  footer bar on the dashboard show the last pipeline-refresh date alongside the dry-season
+  imagery window it was computed from (surfaced from the pipeline run log via
+  /api/v1/meta; issue #124). The pipeline run log now records that window and is mirrored
+  to `frontend/public/`, so the note updates itself on every refresh.
+- Find-my-ward on the dashboard: a locate button on the map resolves the visitor's
+  position to the BMC ward containing it via /api/v1/lookup, one tap after arrival (no
+  permission prompt on load), with graceful handling of denial, unavailability, timeout
+  and positions outside Mumbai (issue #116).
+- End-to-end data pipeline: dry-season Landsat 8/9 LST + NDVI composite, WorldPop
+  population/elderly layer (pinned to the 2020 vintage), OSM hospital distance, Datameet
+  ward + slum-cluster boundaries.
+- Heat Vulnerability Index (HVI), computed per grid cell and rolled up to the 24 BMC wards.
+- Nature-based solutions (NBS) recommendation engine with an ecological-suitability check
+  (Bastin/Veldman 2019) that can reject afforestation in favor of cool roofs or cooling
+  centres, each recommendation cited to a peer-reviewed source.
+- Next.js frontend: Leaflet choropleth (heat vulnerability, plantability, green-cover
+  change layers), master-detail dashboard (ranked ward list + per-ward breakdown, synced
+  through the URL), fullscreen map mode with a themed ward-info popup, methodology page
+  with every weight and data source cited.
+- Sensitivity analysis: top-ward ranking verified stable under +/-20% weight perturbation.
+- Apache-2.0 license, full brand/design system (Inter + JetBrains Mono, teal/emerald
+  tokens), light and dark themes.
+- `pipeline/run_pipeline.py`: an orchestrated runner that chains all 13 pipeline stages
+  in dependency order, stopping on the first hard failure and logging a structured
+  run report, so a data refresh is one command instead of running each stage by hand.
+- `.github/workflows/pipeline-refresh.yml`: a monthly GitHub Actions cron that runs the
+  orchestrated pipeline and opens a PR with the refreshed data, matching the cadence
+  documented in `pipeline/README.md` (satellite/demographic data does not change daily;
+  live weather already updates independently via `frontend/src/lib/weather.ts`).
+- `pipeline/diff_snapshots.py`: a diff-computation step that compares two pipeline runs'
+  output and reports per-ward HVI rank shifts, NBS recommendation changes, and
+  green-cover classification flips, with unit tests under `pipeline/tests/`.
+- `docs/HVI-methodology-report.md`: a standalone technical report expanding the existing
+  methodology and citation docs into a full writeup (PCA weighting, sensitivity
+  analysis, plantability filter, limitations, references).
+
+### Fixed
+- Missing `python-dotenv` and `scipy` in `pipeline/requirements.txt` (used by
+  `07_load.py` and `08_sensitivity.py` respectively, but not previously listed).
+- Dashboard sidebar scroll, fullscreen popup theming in dark mode, ward search matching
+  by locality name as well as ward code.
+- A maintainer-facing proofreading note ("did you validate these literature weights for
+  Mumbai?") was shipping on the live `/methodology` page, addressed to whoever read it as
+  if they were the maintainer. Removed.
+- The `/simulate` sliders accepted physically impossible inputs: up to 100% canopy
+  conversion and 100% pocket-park conversion. Clamped to the range the underlying
+  literature (Ziter et al.) actually covers, grounded in the 24 wards' real
+  impervious-surface data instead of an arbitrary ceiling.
+
+### Known limitations
+
+Stated here instead of only on the methodology page, because a changelog is where people
+check what changed before they trust a number, and burying the caveats where nobody reads
+them first is its own kind of dishonesty.
+
+- The land-surface-to-air-temperature relationship is validated against two weather
+  stations, the only long-record NOAA GSOD sites in Mumbai (`data/lst_validation.json`).
+  Pooled Pearson r = 0.716 on anomalies about each station's own mean. That number says the
+  satellite composite tracks real thermal variation instead of sensor noise. It does not
+  say the LST layer converts into a temperature you could read off a thermometer; the
+  bias between the two ranges from 3.4°C to 13.9°C depending on what the ground is made of,
+  and no single correction fixes that.
+- Land surface temperature is daytime only, one dry-season composite. Nighttime heat is
+  what actually drives heat mortality, and this pipeline does not touch it.
+- Every HVI number is a point estimate. There is no uncertainty band anywhere, so a ward
+  ranked 3rd and a ward ranked 5th might not be meaningfully different and the site
+  currently has no way to tell you that.
+- HVI measures vulnerability per ward, not people exposed. It is not population-weighted,
+  so a small high-vulnerability ward and a large one read identically.
+- No forecast coupling, no alert delivery, no municipal counterparty on the other end.
+  This is a dataset meant to be cited, not an early-warning system, and it does not claim
+  to be one anywhere in the app.
+- `pipeline/14_timeseries.py` and `pipeline/15_optimize.py` run and produce real, committed
+  output (`ward_timeseries.json`, `budget_allocation.json`). Neither is wired into
+  `run_pipeline.py`'s orchestrated stage list or read by anything the live site or API
+  serves. The numbers are real, they're just not reachable from anywhere a visitor would
+  find them.
+- `supabase/migrations/0006_postgis_geometry.sql` is written. `/api/v1/lookup` prefers it
+  and falls back to a JavaScript point-in-polygon test when it isn't applied, so the
+  endpoint works either way, but whether that migration is actually running against the
+  live database is not something a changelog entry can confirm from a repo checkout alone.
+- `.github/workflows/pipeline-refresh.yml` has a monthly schedule and has never executed
+  against real Earth Engine or Supabase credentials. It exists and is wired up; nobody has
+  watched it run.
+- 30 open issues as of this tag. Most are scoped, real work, not noise, and this release
+  does not pretend the backlog is empty.

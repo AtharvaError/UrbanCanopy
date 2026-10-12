@@ -1,0 +1,1244 @@
+{
+  "generated_from": "cells_nbs.geojson",
+  "n_cells": 928,
+  "n_wards": 30,
+  "indicators": [
+    "LST_C",
+    "NDVI",
+    "pop_density_km2",
+    "hospital_dist_m",
+    "impervious_pct"
+  ],
+  "units": {
+    "LST_C": "degrees Celsius (land surface, not air)",
+    "NDVI": "vegetation index, unitless, not a canopy percentage",
+    "pop_density_km2": "people per square kilometre",
+    "hospital_dist_m": "metres",
+    "impervious_pct": "percent (0-100)"
+  },
+  "weights": {
+    "LST_C": 0.18817395466538928,
+    "NDVI": 0.02144072496672723,
+    "pop_density_km2": 0.2651887019953084,
+    "hospital_dist_m": 0.2703470334277262,
+    "impervious_pct": 0.25484958494484883
+  },
+  "score_scale": {
+    "baseline_points": 65.53410796606614,
+    "points_per_contribution": 35.9578130889784
+  },
+  "indicator_stats": {
+    "LST_C": {
+      "mean": 45.39918834886584,
+      "std": 2.507183931350622,
+      "direction": 1
+    },
+    "NDVI": {
+      "mean": 0.28846132534373736,
+      "std": 0.06557084581085726,
+      "direction": -1
+    },
+    "pop_density_km2": {
+      "mean": 10815.74963383175,
+      "std": 8486.83386420283,
+      "direction": 1
+    },
+    "hospital_dist_m": {
+      "mean": 1048.9425663475647,
+      "std": 872.8876464592203,
+      "direction": 1
+    },
+    "impervious_pct": {
+      "mean": 53.8610720771842,
+      "std": 36.00187008679177,
+      "direction": 1
+    }
+  },
+  "locality_types": {
+    "method": "k-means on the indicators, standardised across localities",
+    "k": 3,
+    "silhouette": 0.46288613693151126,
+    "selection": "largest k within 0.05 of the best silhouette",
+    "candidates": [
+      {
+        "k": 2,
+        "inertia": 69.74302840169553,
+        "silhouette": 0.4835931236684543
+      },
+      {
+        "k": 3,
+        "inertia": 40.879668849425144,
+        "silhouette": 0.46288613693151126
+      },
+      {
+        "k": 4,
+        "inertia": 31.80353287647635,
+        "silhouette": 0.4255340866509908
+      }
+    ],
+    "types": [
+      {
+        "id": 0,
+        "name": "Crowded built-up core",
+        "description": "Above the average locality on built-up cover and population density. Below it on green cover and distance to a hospital.",
+        "n": 13,
+        "mean_score": 73.89185645823687,
+        "centroid_z": {
+          "LST_C": -0.32825203145694204,
+          "NDVI": -0.6766684887965655,
+          "pop_density_km2": 0.6144870258987379,
+          "hospital_dist_m": -0.6026062163405587,
+          "impervious_pct": 0.9384097662857018
+        },
+        "members": [
+          "Itwari",
+          "Shanti Nagar",
+          "Rameshwari",
+          "Indora",
+          "Pratap Nagar",
+          "Medical Square",
+          "Manewada",
+          "Sakkardara",
+          "Mahal",
+          "Mominpura",
+          "Nandanvan",
+          "Hudkeshwar",
+          "Khamla"
+        ]
+      },
+      {
+        "id": 1,
+        "name": "Hot open fringe",
+        "description": "Above the average locality on distance to a hospital and surface heat. Below it on population density and built-up cover.",
+        "n": 9,
+        "mean_score": 63.13962147300568,
+        "centroid_z": {
+          "LST_C": 1.2637362172211406,
+          "NDVI": -0.25560870514047623,
+          "pop_density_km2": -1.2833669459523098,
+          "hospital_dist_m": 1.3110678375577378,
+          "impervious_pct": -0.9903784087785006
+        },
+        "members": [
+          "Trimurti Nagar",
+          "Sonegaon",
+          "Jaripatka",
+          "Yashodhara Nagar",
+          "Friends Colony",
+          "Kalamna",
+          "Bhandewadi",
+          "Futala",
+          "Gorewada"
+        ]
+      },
+      {
+        "id": 2,
+        "name": "Greener, cooler neighbourhoods",
+        "description": "Above the average locality on green cover. Below it on surface heat.",
+        "n": 8,
+        "mean_score": 62.10347755582357,
+        "centroid_z": {
+          "LST_C": -0.8882936932562576,
+          "NDVI": 1.3871460875774484,
+          "pop_density_km2": 0.44524639711089903,
+          "hospital_dist_m": -0.49571621569904795,
+          "impervious_pct": -0.41074016033845206
+        },
+        "members": [
+          "Sitabuldi",
+          "Sadar",
+          "Byramji Town",
+          "Dharampeth",
+          "Ajni",
+          "Laxmi Nagar",
+          "Seminary Hills",
+          "Ambazari"
+        ]
+      }
+    ]
+  },
+  "city": {
+    "hvi_mean": 65.5341079660661,
+    "LST_C": 45.39918834886584,
+    "NDVI": 0.28846132534373736,
+    "pop_density_km2": 10815.74963383175,
+    "hospital_dist_m": 1048.9425663475647,
+    "impervious_pct": 53.8610720771842
+  },
+  "wards": [
+    {
+      "ward_id": "Itwari",
+      "ward_gid": 11,
+      "hvi": 82.40773515398884,
+      "rank": 1,
+      "n_cells": 14,
+      "percentile": 100,
+      "LST_C": 44.7120129826205,
+      "LST_C_delta_city": -0.6871753662453415,
+      "NDVI": 0.21536209965290065,
+      "NDVI_delta_city": -0.07309922569083671,
+      "pop_density_km2": 23188.742166050837,
+      "pop_density_km2_delta_city": 12372.992532219087,
+      "hospital_dist_m": 451.9407866854188,
+      "hospital_dist_m_delta_city": -597.001779662146,
+      "impervious_pct": 95.5653386917409,
+      "impervious_pct_delta_city": 41.70426661455671,
+      "top_driver": "pop_density_km2",
+      "top_driver_contrib": 0.38661977857923174,
+      "neighbours": [
+        "Indora",
+        "Mahal",
+        "Mominpura",
+        "Shanti Nagar"
+      ],
+      "coolest_neighbour": {
+        "ward_id": "Mominpura",
+        "hvi": 71.86894025460764
+      },
+      "hottest_neighbour": {
+        "ward_id": "Shanti Nagar",
+        "hvi": 78.49407538144622
+      },
+      "type_id": 0
+    },
+    {
+      "ward_id": "Shanti Nagar",
+      "ward_gid": 26,
+      "hvi": 78.49407538144622,
+      "rank": 2,
+      "n_cells": 20,
+      "percentile": 96.6,
+      "LST_C": 45.610115352209306,
+      "LST_C_delta_city": 0.21092700334346404,
+      "NDVI": 0.23402291775480283,
+      "NDVI_delta_city": -0.054438407588934534,
+      "pop_density_km2": 18439.633144001105,
+      "pop_density_km2_delta_city": 7623.883510169355,
+      "hospital_dist_m": 511.7482992521689,
+      "hospital_dist_m_delta_city": -537.1942670953958,
+      "impervious_pct": 89.8762046441114,
+      "impervious_pct_delta_city": 36.0151325669272,
+      "top_driver": "impervious_pct",
+      "top_driver_contrib": 0.2549434672223445,
+      "neighbours": [
+        "Bhandewadi",
+        "Indora",
+        "Itwari",
+        "Kalamna",
+        "Mahal",
+        "Nandanvan",
+        "Yashodhara Nagar"
+      ],
+      "coolest_neighbour": {
+        "ward_id": "Bhandewadi",
+        "hvi": 59.367377906905276
+      },
+      "hottest_neighbour": {
+        "ward_id": "Itwari",
+        "hvi": 82.40773515398884
+      },
+      "type_id": 0
+    },
+    {
+      "ward_id": "Rameshwari",
+      "ward_gid": 22,
+      "hvi": 76.61784446966583,
+      "rank": 3,
+      "n_cells": 15,
+      "percentile": 93.1,
+      "LST_C": 43.98365662568866,
+      "LST_C_delta_city": -1.4155317231771818,
+      "NDVI": 0.29592477132695244,
+      "NDVI_delta_city": 0.007463445983215078,
+      "pop_density_km2": 23232.367442684314,
+      "pop_density_km2_delta_city": 12416.617808852563,
+      "hospital_dist_m": 561.6641723971786,
+      "hospital_dist_m_delta_city": -487.2783939503861,
+      "impervious_pct": 79.26927363329128,
+      "impervious_pct_delta_city": 25.40820155610708,
+      "top_driver": "pop_density_km2",
+      "top_driver_contrib": 0.3879829407042045,
+      "neighbours": [
+        "Ajni",
+        "Khamla",
+        "Manewada",
+        "Medical Square",
+        "Sakkardara"
+      ],
+      "coolest_neighbour": {
+        "ward_id": "Ajni",
+        "hvi": 63.48403662220099
+      },
+      "hottest_neighbour": {
+        "ward_id": "Medical Square",
+        "hvi": 74.85871225305961
+      },
+      "type_id": 0
+    },
+    {
+      "ward_id": "Indora",
+      "ward_gid": 10,
+      "hvi": 75.98729838988379,
+      "rank": 4,
+      "n_cells": 20,
+      "percentile": 89.7,
+      "LST_C": 44.705742047088506,
+      "LST_C_delta_city": -0.6934463017773353,
+      "NDVI": 0.2572600416033436,
+      "NDVI_delta_city": -0.03120128374039377,
+      "pop_density_km2": 20761.725560427316,
+      "pop_density_km2_delta_city": 9945.975926595565,
+      "hospital_dist_m": 330.7682890264955,
+      "hospital_dist_m_delta_city": -718.1742773210692,
+      "impervious_pct": 88.35819559080375,
+      "impervious_pct_delta_city": 34.49712351361955,
+      "top_driver": "pop_density_km2",
+      "top_driver_contrib": 0.3107826179060251,
+      "neighbours": [
+        "Byramji Town",
+        "Itwari",
+        "Jaripatka",
+        "Mominpura",
+        "Shanti Nagar",
+        "Yashodhara Nagar"
+      ],
+      "coolest_neighbour": {
+        "ward_id": "Yashodhara Nagar",
+        "hvi": 64.5874271160324
+      },
+      "hottest_neighbour": {
+        "ward_id": "Itwari",
+        "hvi": 82.40773515398884
+      },
+      "type_id": 0
+    },
+    {
+      "ward_id": "Pratap Nagar",
+      "ward_gid": 21,
+      "hvi": 75.42518909872847,
+      "rank": 5,
+      "n_cells": 10,
+      "percentile": 86.2,
+      "LST_C": 43.89516254084025,
+      "LST_C_delta_city": -1.5040258080255882,
+      "NDVI": 0.3169052083326678,
+      "NDVI_delta_city": 0.028443882988930413,
+      "pop_density_km2": 24083.905710838764,
+      "pop_density_km2_delta_city": 13268.156077007014,
+      "hospital_dist_m": 240.13054745604194,
+      "hospital_dist_m_delta_city": -808.8120188915227,
+      "impervious_pct": 86.80020869625989,
+      "impervious_pct_delta_city": 32.93913661907569,
+      "top_driver": "pop_density_km2",
+      "top_driver_contrib": 0.41459101759654315,
+      "neighbours": [
+        "Ambazari",
+        "Khamla",
+        "Laxmi Nagar",
+        "Sonegaon",
+        "Trimurti Nagar"
+      ],
+      "coolest_neighbour": {
+        "ward_id": "Ambazari",
+        "hvi": 48.17779395799287
+      },
+      "hottest_neighbour": {
+        "ward_id": "Trimurti Nagar",
+        "hvi": 74.7343259627855
+      },
+      "type_id": 0
+    },
+    {
+      "ward_id": "Medical Square",
+      "ward_gid": 18,
+      "hvi": 74.85871225305961,
+      "rank": 6,
+      "n_cells": 15,
+      "percentile": 82.8,
+      "LST_C": 43.93772335639524,
+      "LST_C_delta_city": -1.461464992470603,
+      "NDVI": 0.2972607702864414,
+      "NDVI_delta_city": 0.008799444942704016,
+      "pop_density_km2": 24369.393678345976,
+      "pop_density_km2_delta_city": 13553.644044514225,
+      "hospital_dist_m": 279.7488807688342,
+      "hospital_dist_m_delta_city": -769.1936855787305,
+      "impervious_pct": 80.22241293706078,
+      "impervious_pct_delta_city": 26.361340859876584,
+      "top_driver": "pop_density_km2",
+      "top_driver_contrib": 0.4235116804432441,
+      "neighbours": [
+        "Ajni",
+        "Mahal",
+        "Mominpura",
+        "Rameshwari",
+        "Sakkardara",
+        "Sitabuldi"
+      ],
+      "coolest_neighbour": {
+        "ward_id": "Ajni",
+        "hvi": 63.48403662220099
+      },
+      "hottest_neighbour": {
+        "ward_id": "Rameshwari",
+        "hvi": 76.61784446966583
+      },
+      "type_id": 0
+    },
+    {
+      "ward_id": "Trimurti Nagar",
+      "ward_gid": 29,
+      "hvi": 74.7343259627855,
+      "rank": 7,
+      "n_cells": 55,
+      "percentile": 79.3,
+      "LST_C": 46.95368338837822,
+      "LST_C_delta_city": 1.5544950395123749,
+      "NDVI": 0.2936647636795562,
+      "NDVI_delta_city": 0.005203438335818822,
+      "pop_density_km2": 9867.974929103571,
+      "pop_density_km2_delta_city": -947.7747047281791,
+      "hospital_dist_m": 1771.1261299584055,
+      "hospital_dist_m_delta_city": 722.1835636108408,
+      "impervious_pct": 46.3506812465712,
+      "impervious_pct_delta_city": -7.510390830612998,
+      "top_driver": "hospital_dist_m",
+      "top_driver_contrib": 0.22367160860212215,
+      "neighbours": [
+        "Ambazari",
+        "Pratap Nagar",
+        "Sonegaon"
+      ],
+      "coolest_neighbour": {
+        "ward_id": "Ambazari",
+        "hvi": 48.17779395799287
+      },
+      "hottest_neighbour": {
+        "ward_id": "Pratap Nagar",
+        "hvi": 75.42518909872847
+      },
+      "type_id": 1
+    },
+    {
+      "ward_id": "Manewada",
+      "ward_gid": 17,
+      "hvi": 72.9690965295278,
+      "rank": 8,
+      "n_cells": 29,
+      "percentile": 75.9,
+      "LST_C": 44.25291192841438,
+      "LST_C_delta_city": -1.1462764204514642,
+      "NDVI": 0.2473378241031804,
+      "NDVI_delta_city": -0.04112350124055697,
+      "pop_density_km2": 17228.016044043103,
+      "pop_density_km2_delta_city": 6412.266410211352,
+      "hospital_dist_m": 561.2489529206538,
+      "hospital_dist_m_delta_city": -487.69361342691093,
+      "impervious_pct": 86.35778670734014,
+      "impervious_pct_delta_city": 32.49671463015594,
+      "top_driver": "impervious_pct",
+      "top_driver_contrib": 0.2300373346051495,
+      "neighbours": [
+        "Hudkeshwar",
+        "Khamla",
+        "Rameshwari",
+        "Sakkardara"
+      ],
+      "coolest_neighbour": {
+        "ward_id": "Khamla",
+        "hvi": 66.90260338511239
+      },
+      "hottest_neighbour": {
+        "ward_id": "Rameshwari",
+        "hvi": 76.61784446966583
+      },
+      "type_id": 0
+    },
+    {
+      "ward_id": "Sakkardara",
+      "ward_gid": 24,
+      "hvi": 72.80087329451824,
+      "rank": 9,
+      "n_cells": 15,
+      "percentile": 72.4,
+      "LST_C": 43.93366791846452,
+      "LST_C_delta_city": -1.4655204304013196,
+      "NDVI": 0.25434448941731397,
+      "NDVI_delta_city": -0.034116835926423394,
+      "pop_density_km2": 20924.826948158534,
+      "pop_density_km2_delta_city": 10109.077314326783,
+      "hospital_dist_m": 277.0649603358137,
+      "hospital_dist_m_delta_city": -771.877606011751,
+      "impervious_pct": 85.52077592608273,
+      "impervious_pct_delta_city": 31.659703848898538,
+      "top_driver": "pop_density_km2",
+      "top_driver_contrib": 0.31587905858085835,
+      "neighbours": [
+        "Hudkeshwar",
+        "Mahal",
+        "Manewada",
+        "Medical Square",
+        "Nandanvan",
+        "Rameshwari"
+      ],
+      "coolest_neighbour": {
+        "ward_id": "Hudkeshwar",
+        "hvi": 68.80177674931616
+      },
+      "hottest_neighbour": {
+        "ward_id": "Rameshwari",
+        "hvi": 76.61784446966583
+      },
+      "type_id": 0
+    },
+    {
+      "ward_id": "Mahal",
+      "ward_gid": 16,
+      "hvi": 72.48175280877285,
+      "rank": 10,
+      "n_cells": 9,
+      "percentile": 69,
+      "LST_C": 44.5327172097786,
+      "LST_C_delta_city": -0.8664711390872384,
+      "NDVI": 0.22572489576396226,
+      "NDVI_delta_city": -0.0627364295797751,
+      "pop_density_km2": 17247.177879706393,
+      "pop_density_km2_delta_city": 6431.428245874642,
+      "hospital_dist_m": 262.9532495084336,
+      "hospital_dist_m_delta_city": -785.9893168391311,
+      "impervious_pct": 93.44477937735196,
+      "impervious_pct_delta_city": 39.58370730016777,
+      "top_driver": "impervious_pct",
+      "top_driver_contrib": 0.28020464913924426,
+      "neighbours": [
+        "Itwari",
+        "Medical Square",
+        "Mominpura",
+        "Nandanvan",
+        "Sakkardara",
+        "Shanti Nagar"
+      ],
+      "coolest_neighbour": {
+        "ward_id": "Nandanvan",
+        "hvi": 70.97823618845145
+      },
+      "hottest_neighbour": {
+        "ward_id": "Itwari",
+        "hvi": 82.40773515398884
+      },
+      "type_id": 0
+    },
+    {
+      "ward_id": "Mominpura",
+      "ward_gid": 19,
+      "hvi": 71.86894025460764,
+      "rank": 11,
+      "n_cells": 15,
+      "percentile": 65.5,
+      "LST_C": 44.20499793105383,
+      "LST_C_delta_city": -1.1941904178120097,
+      "NDVI": 0.2584655443540533,
+      "NDVI_delta_city": -0.029995780989684084,
+      "pop_density_km2": 20964.026251952495,
+      "pop_density_km2_delta_city": 10148.276618120744,
+      "hospital_dist_m": 346.35351751187113,
+      "hospital_dist_m_delta_city": -702.5890488356936,
+      "impervious_pct": 75.96845175859802,
+      "impervious_pct_delta_city": 22.107379681413825,
+      "top_driver": "pop_density_km2",
+      "top_driver_contrib": 0.31710392201739684,
+      "neighbours": [
+        "Byramji Town",
+        "Indora",
+        "Itwari",
+        "Mahal",
+        "Medical Square",
+        "Sadar",
+        "Sitabuldi"
+      ],
+      "coolest_neighbour": {
+        "ward_id": "Byramji Town",
+        "hvi": 66.66915567834384
+      },
+      "hottest_neighbour": {
+        "ward_id": "Itwari",
+        "hvi": 82.40773515398884
+      },
+      "type_id": 0
+    },
+    {
+      "ward_id": "Nandanvan",
+      "ward_gid": 20,
+      "hvi": 70.97823618845145,
+      "rank": 12,
+      "n_cells": 26,
+      "percentile": 62.1,
+      "LST_C": 44.25740524262357,
+      "LST_C_delta_city": -1.141783106242272,
+      "NDVI": 0.2386234705898863,
+      "NDVI_delta_city": -0.04983785475385105,
+      "pop_density_km2": 14966.008314152537,
+      "pop_density_km2_delta_city": 4150.258680320787,
+      "hospital_dist_m": 497.32867395770006,
+      "hospital_dist_m_delta_city": -551.6138923898646,
+      "impervious_pct": 90.86773499425772,
+      "impervious_pct_delta_city": 37.00666291707352,
+      "top_driver": "impervious_pct",
+      "top_driver_contrib": 0.2619622997881482,
+      "neighbours": [
+        "Bhandewadi",
+        "Mahal",
+        "Sakkardara",
+        "Shanti Nagar"
+      ],
+      "coolest_neighbour": {
+        "ward_id": "Bhandewadi",
+        "hvi": 59.367377906905276
+      },
+      "hottest_neighbour": {
+        "ward_id": "Shanti Nagar",
+        "hvi": 78.49407538144622
+      },
+      "type_id": 0
+    },
+    {
+      "ward_id": "Hudkeshwar",
+      "ward_gid": 9,
+      "hvi": 68.80177674931616,
+      "rank": 13,
+      "n_cells": 31,
+      "percentile": 58.6,
+      "LST_C": 44.798054529197756,
+      "LST_C_delta_city": -0.6011338196680853,
+      "NDVI": 0.23380049863068655,
+      "NDVI_delta_city": -0.05466082671305081,
+      "pop_density_km2": 9794.384209043548,
+      "pop_density_km2_delta_city": -1021.3654247882023,
+      "hospital_dist_m": 707.2596354784578,
+      "hospital_dist_m_delta_city": -341.68293086910694,
+      "impervious_pct": 90.00546357296679,
+      "impervious_pct_delta_city": 36.14439149578259,
+      "top_driver": "impervious_pct",
+      "top_driver_contrib": 0.2558584637014107,
+      "neighbours": [
+        "Manewada",
+        "Sakkardara"
+      ],
+      "coolest_neighbour": {
+        "ward_id": "Sakkardara",
+        "hvi": 72.80087329451824
+      },
+      "hottest_neighbour": {
+        "ward_id": "Manewada",
+        "hvi": 72.9690965295278
+      },
+      "type_id": 0
+    },
+    {
+      "ward_id": "Sitabuldi",
+      "ward_gid": 27,
+      "hvi": 68.1291362347726,
+      "rank": 14,
+      "n_cells": 14,
+      "percentile": 55.2,
+      "LST_C": 43.78446355230081,
+      "LST_C_delta_city": -1.614724796565035,
+      "NDVI": 0.33334022904019045,
+      "NDVI_delta_city": 0.04487890369645309,
+      "pop_density_km2": 22364.90126265823,
+      "pop_density_km2_delta_city": 11549.15162882648,
+      "hospital_dist_m": 272.48241689357053,
+      "hospital_dist_m_delta_city": -776.4601494539942,
+      "impervious_pct": 66.24166887142101,
+      "impervious_pct_delta_city": 12.380596794236816,
+      "top_driver": "pop_density_km2",
+      "top_driver_contrib": 0.36087716321558705,
+      "neighbours": [
+        "Ajni",
+        "Dharampeth",
+        "Laxmi Nagar",
+        "Medical Square",
+        "Mominpura",
+        "Sadar"
+      ],
+      "coolest_neighbour": {
+        "ward_id": "Laxmi Nagar",
+        "hvi": 60.33332727542371
+      },
+      "hottest_neighbour": {
+        "ward_id": "Medical Square",
+        "hvi": 74.85871225305961
+      },
+      "type_id": 2
+    },
+    {
+      "ward_id": "Sadar",
+      "ward_gid": 23,
+      "hvi": 67.58474652323916,
+      "rank": 15,
+      "n_cells": 11,
+      "percentile": 51.7,
+      "LST_C": 44.08755836740438,
+      "LST_C_delta_city": -1.311629981461465,
+      "NDVI": 0.3574502246088474,
+      "NDVI_delta_city": 0.06898889926511004,
+      "pop_density_km2": 20706.977537198378,
+      "pop_density_km2_delta_city": 9891.227903366627,
+      "hospital_dist_m": 451.6634593534356,
+      "hospital_dist_m_delta_city": -597.279106994129,
+      "impervious_pct": 61.48175297168587,
+      "impervious_pct_delta_city": 7.620680894501675,
+      "top_driver": "pop_density_km2",
+      "top_driver_contrib": 0.30907190252627326,
+      "neighbours": [
+        "Byramji Town",
+        "Dharampeth",
+        "Mominpura",
+        "Seminary Hills",
+        "Sitabuldi"
+      ],
+      "coolest_neighbour": {
+        "ward_id": "Seminary Hills",
+        "hvi": 58.06306414697149
+      },
+      "hottest_neighbour": {
+        "ward_id": "Mominpura",
+        "hvi": 71.86894025460764
+      },
+      "type_id": 2
+    },
+    {
+      "ward_id": "Khamla",
+      "ward_gid": 14,
+      "hvi": 66.90260338511239,
+      "rank": 16,
+      "n_cells": 39,
+      "percentile": 48.3,
+      "LST_C": 44.14481343295578,
+      "LST_C_delta_city": -1.2543749159100628,
+      "NDVI": 0.3002145941762514,
+      "NDVI_delta_city": 0.011753268832514041,
+      "pop_density_km2": 16406.37115074509,
+      "pop_density_km2_delta_city": 5590.621516913339,
+      "hospital_dist_m": 469.39344036291544,
+      "hospital_dist_m_delta_city": -579.5491259846492,
+      "impervious_pct": 73.75885605564612,
+      "impervious_pct_delta_city": 19.897783978461923,
+      "top_driver": "pop_density_km2",
+      "top_driver_contrib": 0.1746905485767452,
+      "neighbours": [
+        "Ajni",
+        "Laxmi Nagar",
+        "Manewada",
+        "Pratap Nagar",
+        "Rameshwari",
+        "Sonegaon"
+      ],
+      "coolest_neighbour": {
+        "ward_id": "Laxmi Nagar",
+        "hvi": 60.33332727542371
+      },
+      "hottest_neighbour": {
+        "ward_id": "Rameshwari",
+        "hvi": 76.61784446966583
+      },
+      "type_id": 0
+    },
+    {
+      "ward_id": "Byramji Town",
+      "ward_gid": 4,
+      "hvi": 66.66915567834384,
+      "rank": 17,
+      "n_cells": 13,
+      "percentile": 44.8,
+      "LST_C": 44.168826456287505,
+      "LST_C_delta_city": -1.2303618925783368,
+      "NDVI": 0.3350502963582661,
+      "NDVI_delta_city": 0.046588971014528746,
+      "pop_density_km2": 20665.057528718185,
+      "pop_density_km2_delta_city": 9849.307894886435,
+      "hospital_dist_m": 328.15183767198056,
+      "hospital_dist_m_delta_city": -720.7907286755842,
+      "impervious_pct": 61.577321431155,
+      "impervious_pct_delta_city": 7.716249353970802,
+      "top_driver": "pop_density_km2",
+      "top_driver_contrib": 0.3077620250366968,
+      "neighbours": [
+        "Indora",
+        "Jaripatka",
+        "Mominpura",
+        "Sadar",
+        "Seminary Hills"
+      ],
+      "coolest_neighbour": {
+        "ward_id": "Seminary Hills",
+        "hvi": 58.06306414697149
+      },
+      "hottest_neighbour": {
+        "ward_id": "Indora",
+        "hvi": 75.98729838988379
+      },
+      "type_id": 2
+    },
+    {
+      "ward_id": "Sonegaon",
+      "ward_gid": 28,
+      "hvi": 66.21857089471351,
+      "rank": 18,
+      "n_cells": 81,
+      "percentile": 41.4,
+      "LST_C": 47.507726140098036,
+      "LST_C_delta_city": 2.1085377912321945,
+      "NDVI": 0.3140956751428046,
+      "NDVI_delta_city": 0.025634349799067258,
+      "pop_density_km2": 4406.289110503416,
+      "pop_density_km2_delta_city": -6409.460523328335,
+      "hospital_dist_m": 2106.5925378765214,
+      "hospital_dist_m_delta_city": 1057.6499715289567,
+      "impervious_pct": 17.39568320870824,
+      "impervious_pct_delta_city": -36.465388868475955,
+      "top_driver": "hospital_dist_m",
+      "top_driver_contrib": 0.32757083155848143,
+      "neighbours": [
+        "Khamla",
+        "Pratap Nagar",
+        "Trimurti Nagar"
+      ],
+      "coolest_neighbour": {
+        "ward_id": "Khamla",
+        "hvi": 66.90260338511239
+      },
+      "hottest_neighbour": {
+        "ward_id": "Pratap Nagar",
+        "hvi": 75.42518909872847
+      },
+      "type_id": 1
+    },
+    {
+      "ward_id": "Jaripatka",
+      "ward_gid": 12,
+      "hvi": 64.60915110628133,
+      "rank": 19,
+      "n_cells": 79,
+      "percentile": 37.9,
+      "LST_C": 45.653025967932,
+      "LST_C_delta_city": 0.25383761906616087,
+      "NDVI": 0.27641489706721833,
+      "NDVI_delta_city": -0.012046428276519028,
+      "pop_density_km2": 10037.196171324444,
+      "pop_density_km2_delta_city": -778.5534625073069,
+      "hospital_dist_m": 1010.4854970721705,
+      "hospital_dist_m_delta_city": -38.45706927539425,
+      "impervious_pct": 52.09867557262213,
+      "impervious_pct_delta_city": -1.7623965045620693,
+      "top_driver": "LST_C",
+      "top_driver_contrib": 0.019051505565766774,
+      "neighbours": [
+        "Byramji Town",
+        "Friends Colony",
+        "Gorewada",
+        "Indora",
+        "Seminary Hills",
+        "Yashodhara Nagar"
+      ],
+      "coolest_neighbour": {
+        "ward_id": "Gorewada",
+        "hvi": 54.519366068510635
+      },
+      "hottest_neighbour": {
+        "ward_id": "Indora",
+        "hvi": 75.98729838988379
+      },
+      "type_id": 1
+    },
+    {
+      "ward_id": "Yashodhara Nagar",
+      "ward_gid": 30,
+      "hvi": 64.5874271160324,
+      "rank": 20,
+      "n_cells": 47,
+      "percentile": 34.5,
+      "LST_C": 46.54693549886363,
+      "LST_C_delta_city": 1.147747149997791,
+      "NDVI": 0.2531697233815061,
+      "NDVI_delta_city": -0.035291601962231245,
+      "pop_density_km2": 4362.77497327547,
+      "pop_density_km2_delta_city": -6452.9746605562805,
+      "hospital_dist_m": 1196.9659553263305,
+      "hospital_dist_m_delta_city": 148.02338897876575,
+      "impervious_pct": 58.35069513871874,
+      "impervious_pct_delta_city": 4.4896230615345445,
+      "top_driver": "LST_C",
+      "top_driver_contrib": 0.08614291016721186,
+      "neighbours": [
+        "Indora",
+        "Jaripatka",
+        "Kalamna",
+        "Shanti Nagar"
+      ],
+      "coolest_neighbour": {
+        "ward_id": "Kalamna",
+        "hvi": 64.29024345215166
+      },
+      "hottest_neighbour": {
+        "ward_id": "Shanti Nagar",
+        "hvi": 78.49407538144622
+      },
+      "type_id": 1
+    },
+    {
+      "ward_id": "Dharampeth",
+      "ward_gid": 5,
+      "hvi": 64.38656000764387,
+      "rank": 21,
+      "n_cells": 19,
+      "percentile": 31,
+      "LST_C": 43.2110789720068,
+      "LST_C_delta_city": -2.188109376859039,
+      "NDVI": 0.36573556600944945,
+      "NDVI_delta_city": 0.07727424066571209,
+      "pop_density_km2": 19846.056988568882,
+      "pop_density_km2_delta_city": 9030.307354737131,
+      "hospital_dist_m": 299.00993688629484,
+      "hospital_dist_m_delta_city": -749.9326294612699,
+      "impervious_pct": 69.07204905823546,
+      "impervious_pct_delta_city": 15.210976981051267,
+      "top_driver": "pop_density_km2",
+      "top_driver_contrib": 0.2821706568479369,
+      "neighbours": [
+        "Ambazari",
+        "Futala",
+        "Laxmi Nagar",
+        "Sadar",
+        "Seminary Hills",
+        "Sitabuldi"
+      ],
+      "coolest_neighbour": {
+        "ward_id": "Ambazari",
+        "hvi": 48.17779395799287
+      },
+      "hottest_neighbour": {
+        "ward_id": "Sitabuldi",
+        "hvi": 68.1291362347726
+      },
+      "type_id": 2
+    },
+    {
+      "ward_id": "Friends Colony",
+      "ward_gid": 6,
+      "hvi": 64.29513445571916,
+      "rank": 22,
+      "n_cells": 49,
+      "percentile": 27.6,
+      "LST_C": 46.73690499176628,
+      "LST_C_delta_city": 1.337716642900439,
+      "NDVI": 0.2733218205768055,
+      "NDVI_delta_city": -0.015139504766931877,
+      "pop_density_km2": 8494.958644823795,
+      "pop_density_km2_delta_city": -2320.7909890079554,
+      "hospital_dist_m": 1111.847123411759,
+      "hospital_dist_m_delta_city": 62.90455706419425,
+      "impervious_pct": 41.60301473332928,
+      "impervious_pct_delta_city": -12.258057343854915,
+      "top_driver": "LST_C",
+      "top_driver_contrib": 0.1004008632029959,
+      "neighbours": [
+        "Futala",
+        "Gorewada",
+        "Jaripatka",
+        "Seminary Hills"
+      ],
+      "coolest_neighbour": {
+        "ward_id": "Gorewada",
+        "hvi": 54.519366068510635
+      },
+      "hottest_neighbour": {
+        "ward_id": "Jaripatka",
+        "hvi": 64.60915110628133
+      },
+      "type_id": 1
+    },
+    {
+      "ward_id": "Kalamna",
+      "ward_gid": 13,
+      "hvi": 64.29024345215166,
+      "rank": 23,
+      "n_cells": 57,
+      "percentile": 24.1,
+      "LST_C": 46.06465411477146,
+      "LST_C_delta_city": 0.6654657659056156,
+      "NDVI": 0.26033740310880443,
+      "NDVI_delta_city": -0.02812392223493293,
+      "pop_density_km2": 2181.5496283165967,
+      "pop_density_km2_delta_city": -8634.200005515155,
+      "hospital_dist_m": 1750.5079754483404,
+      "hospital_dist_m_delta_city": 701.5654091007757,
+      "impervious_pct": 48.03710361368236,
+      "impervious_pct_delta_city": -5.823968463501835,
+      "top_driver": "hospital_dist_m",
+      "top_driver_contrib": 0.21728584185520894,
+      "neighbours": [
+        "Bhandewadi",
+        "Shanti Nagar",
+        "Yashodhara Nagar"
+      ],
+      "coolest_neighbour": {
+        "ward_id": "Bhandewadi",
+        "hvi": 59.367377906905276
+      },
+      "hottest_neighbour": {
+        "ward_id": "Shanti Nagar",
+        "hvi": 78.49407538144622
+      },
+      "type_id": 1
+    },
+    {
+      "ward_id": "Ajni",
+      "ward_gid": 1,
+      "hvi": 63.48403662220099,
+      "rank": 24,
+      "n_cells": 13,
+      "percentile": 20.7,
+      "LST_C": 43.877858996086054,
+      "LST_C_delta_city": -1.5213293527797873,
+      "NDVI": 0.3587099901048519,
+      "NDVI_delta_city": 0.07024866476111452,
+      "pop_density_km2": 20678.796135865097,
+      "pop_density_km2_delta_city": 9863.046502033347,
+      "hospital_dist_m": 361.990323308739,
+      "hospital_dist_m_delta_city": -686.9522430388257,
+      "impervious_pct": 51.700727493835835,
+      "impervious_pct_delta_city": -2.160344583348362,
+      "top_driver": "pop_density_km2",
+      "top_driver_contrib": 0.3081913162723694,
+      "neighbours": [
+        "Khamla",
+        "Laxmi Nagar",
+        "Medical Square",
+        "Rameshwari",
+        "Sitabuldi"
+      ],
+      "coolest_neighbour": {
+        "ward_id": "Laxmi Nagar",
+        "hvi": 60.33332727542371
+      },
+      "hottest_neighbour": {
+        "ward_id": "Rameshwari",
+        "hvi": 76.61784446966583
+      },
+      "type_id": 2
+    },
+    {
+      "ward_id": "Laxmi Nagar",
+      "ward_gid": 15,
+      "hvi": 60.33332727542371,
+      "rank": 25,
+      "n_cells": 13,
+      "percentile": 17.2,
+      "LST_C": 43.1966866827887,
+      "LST_C_delta_city": -2.20250166607714,
+      "NDVI": 0.38325912830318987,
+      "NDVI_delta_city": 0.0947978029594525,
+      "pop_density_km2": 18563.971845374028,
+      "pop_density_km2_delta_city": 7748.222211542277,
+      "hospital_dist_m": 269.0927792887615,
+      "hospital_dist_m_delta_city": -779.8497870588033,
+      "impervious_pct": 61.07851597081787,
+      "impervious_pct_delta_city": 7.217443893633671,
+      "top_driver": "pop_density_km2",
+      "top_driver_contrib": 0.24210925109738993,
+      "neighbours": [
+        "Ajni",
+        "Ambazari",
+        "Dharampeth",
+        "Khamla",
+        "Pratap Nagar",
+        "Sitabuldi"
+      ],
+      "coolest_neighbour": {
+        "ward_id": "Ambazari",
+        "hvi": 48.17779395799287
+      },
+      "hottest_neighbour": {
+        "ward_id": "Pratap Nagar",
+        "hvi": 75.42518909872847
+      },
+      "type_id": 2
+    },
+    {
+      "ward_id": "Bhandewadi",
+      "ward_gid": 3,
+      "hvi": 59.367377906905276,
+      "rank": 26,
+      "n_cells": 57,
+      "percentile": 13.8,
+      "LST_C": 45.039343269318685,
+      "LST_C_delta_city": -0.3598450795471564,
+      "NDVI": 0.2570058771237168,
+      "NDVI_delta_city": -0.031455448220020554,
+      "pop_density_km2": 2994.061415556741,
+      "pop_density_km2_delta_city": -7821.68821827501,
+      "hospital_dist_m": 1212.5519644391193,
+      "hospital_dist_m_delta_city": 163.60939809155457,
+      "impervious_pct": 59.364234213480685,
+      "impervious_pct_delta_city": 5.503162136296488,
+      "top_driver": "hospital_dist_m",
+      "top_driver_contrib": 0.05067240393923278,
+      "neighbours": [
+        "Kalamna",
+        "Nandanvan",
+        "Shanti Nagar"
+      ],
+      "coolest_neighbour": {
+        "ward_id": "Kalamna",
+        "hvi": 64.29024345215166
+      },
+      "hottest_neighbour": {
+        "ward_id": "Shanti Nagar",
+        "hvi": 78.49407538144622
+      },
+      "type_id": 1
+    },
+    {
+      "ward_id": "Seminary Hills",
+      "ward_gid": 25,
+      "hvi": 58.06306414697149,
+      "rank": 27,
+      "n_cells": 24,
+      "percentile": 10.3,
+      "LST_C": 44.219417239211246,
+      "LST_C_delta_city": -1.1797711096545953,
+      "NDVI": 0.38559788723340455,
+      "NDVI_delta_city": 0.09713656188966718,
+      "pop_density_km2": 14764.682036949032,
+      "pop_density_km2_delta_city": 3948.932403117282,
+      "hospital_dist_m": 677.5323824028029,
+      "hospital_dist_m_delta_city": -371.4101839447618,
+      "impervious_pct": 40.32418063427201,
+      "impervious_pct_delta_city": -13.536891442912186,
+      "top_driver": "pop_density_km2",
+      "top_driver_contrib": 0.1233925719539523,
+      "neighbours": [
+        "Byramji Town",
+        "Dharampeth",
+        "Friends Colony",
+        "Futala",
+        "Jaripatka",
+        "Sadar"
+      ],
+      "coolest_neighbour": {
+        "ward_id": "Futala",
+        "hvi": 55.63499629395164
+      },
+      "hottest_neighbour": {
+        "ward_id": "Sadar",
+        "hvi": 67.58474652323916
+      },
+      "type_id": 2
+    },
+    {
+      "ward_id": "Futala",
+      "ward_gid": 7,
+      "hvi": 55.63499629395164,
+      "rank": 28,
+      "n_cells": 69,
+      "percentile": 6.9,
+      "LST_C": 46.81560456787533,
+      "LST_C_delta_city": 1.4164162190094913,
+      "NDVI": 0.3138815436160789,
+      "NDVI_delta_city": 0.025420218272341533,
+      "pop_density_km2": 5352.699196744559,
+      "pop_density_km2_delta_city": -5463.050437087191,
+      "hospital_dist_m": 1090.2831180720964,
+      "hospital_dist_m_delta_city": 41.34055172453168,
+      "impervious_pct": 23.43312691634187,
+      "impervious_pct_delta_city": -30.427945160842327,
+      "top_driver": "LST_C",
+      "top_driver_contrib": 0.10630757402773906,
+      "neighbours": [
+        "Ambazari",
+        "Dharampeth",
+        "Friends Colony",
+        "Seminary Hills"
+      ],
+      "coolest_neighbour": {
+        "ward_id": "Ambazari",
+        "hvi": 48.17779395799287
+      },
+      "hottest_neighbour": {
+        "ward_id": "Dharampeth",
+        "hvi": 64.38656000764387
+      },
+      "type_id": 1
+    },
+    {
+      "ward_id": "Gorewada",
+      "ward_gid": 8,
+      "hvi": 54.519366068510635,
+      "rank": 29,
+      "n_cells": 40,
+      "percentile": 3.4,
+      "LST_C": 44.829776565935724,
+      "LST_C_delta_city": -0.5694117829301177,
+      "NDVI": 0.2816743335683237,
+      "NDVI_delta_city": -0.006786991775413642,
+      "pop_density_km2": 2814.564473041574,
+      "pop_density_km2_delta_city": -8001.185160790177,
+      "hospital_dist_m": 1844.589825303367,
+      "hospital_dist_m_delta_city": 795.6472589558023,
+      "impervious_pct": 16.8183495629362,
+      "impervious_pct_delta_city": -37.042722514248,
+      "top_driver": "hospital_dist_m",
+      "top_driver_contrib": 0.24642447053310673,
+      "neighbours": [
+        "Friends Colony",
+        "Jaripatka"
+      ],
+      "coolest_neighbour": {
+        "ward_id": "Friends Colony",
+        "hvi": 64.29513445571916
+      },
+      "hottest_neighbour": {
+        "ward_id": "Jaripatka",
+        "hvi": 64.60915110628133
+      },
+      "type_id": 1
+    },
+    {
+      "ward_id": "Ambazari",
+      "ward_gid": 2,
+      "hvi": 48.17779395799287,
+      "rank": 30,
+      "n_cells": 29,
+      "percentile": 0,
+      "LST_C": 43.287479759976776,
+      "LST_C_delta_city": -2.1117085888890657,
+      "NDVI": 0.37204086513827583,
+      "NDVI_delta_city": 0.08357953979453847,
+      "pop_density_km2": 7440.931562945639,
+      "pop_density_km2_delta_city": -3374.818070886112,
+      "hospital_dist_m": 1184.409321324739,
+      "hospital_dist_m_delta_city": 135.46675497717433,
+      "impervious_pct": 20.89395927073014,
+      "impervious_pct_delta_city": -32.967112806454054,
+      "top_driver": "hospital_dist_m",
+      "top_driver_contrib": 0.04195618472173059,
+      "neighbours": [
+        "Dharampeth",
+        "Futala",
+        "Laxmi Nagar",
+        "Pratap Nagar",
+        "Trimurti Nagar"
+      ],
+      "coolest_neighbour": {
+        "ward_id": "Futala",
+        "hvi": 55.63499629395164
+      },
+      "hottest_neighbour": {
+        "ward_id": "Pratap Nagar",
+        "hvi": 75.42518909872847
+      },
+      "type_id": 2
+    }
+  ]
+}
