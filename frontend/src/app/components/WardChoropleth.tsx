@@ -255,7 +255,7 @@ function hoverCardHtml(
   if (typeof properties.grid_id === "string") {
     if (typeof properties.HVI === "number") cellLines.push(`This cell scores ${properties.HVI.toFixed(1)}`);
     if (typeof properties.plantable === "boolean") cellLines.push(properties.plantable ? "plantable" : "not plantable");
-    if (typeof properties.change_class === "string") cellLines.push(`green cover ${properties.change_class}`);
+    if (typeof properties.change_class === "string") cellLines.push(`green cover ${escapeHtml(properties.change_class)}`);
   }
 
   return [
@@ -421,6 +421,32 @@ function Legend({ layer, profiles }: { layer: LayerId; profiles: WardProfileData
   );
 }
 
+/**
+ * True once the map's container has been laid out.
+ *
+ * Leaflet reads its container's pixel size to turn bounds into a zoom level.
+ * On a cold load the first effects can run before the browser has given the
+ * container a size, and a view computed for a 0 x 0 map is nonsense: fitBounds
+ * picks the deepest zoom, and flyToBounds divides by zero and throws, which
+ * took the whole dashboard down when a link opened it on a locality.
+ */
+function useMapHasSize(): boolean {
+  const map = useMap();
+  const [hasSize, setHasSize] = useState(false);
+  useEffect(() => {
+    const check = () => {
+      map.invalidateSize();
+      const size = map.getSize();
+      setHasSize(size.x > 0 && size.y > 0);
+    };
+    check();
+    const observer = new ResizeObserver(check);
+    observer.observe(map.getContainer());
+    return () => observer.disconnect();
+  }, [map]);
+  return hasSize;
+}
+
 /** Pans/zooms to the selected ward when selection changes and ward-level geometry is available. */
 function FlyToSelection({
   selectedWardId,
@@ -430,12 +456,20 @@ function FlyToSelection({
   wardsGeo: FeatureCollection<Geometry, WardProps> | null;
 }) {
   const map = useMap();
+  const hasSize = useMapHasSize();
   useEffect(() => {
-    if (!selectedWardId || !wardsGeo) return;
+    if (!hasSize || !selectedWardId || !wardsGeo) return;
     const feature = wardsGeo.features.find((f) => f.properties.ward_id === selectedWardId);
     const bounds = feature ? boundsOf(feature.geometry) : null;
-    if (bounds) map.flyToBounds(bounds, { padding: [48, 48], maxZoom: 13, duration: 0.6 });
-  }, [selectedWardId, wardsGeo, map]);
+    if (!bounds) return;
+    try {
+      map.flyToBounds(bounds, { padding: [48, 48], maxZoom: 13, duration: 0.6 });
+    } catch {
+      // The animation is a nicety. If Leaflet cannot run it, go there without one
+      // rather than let a map error replace the dashboard with an error page.
+      map.fitBounds(bounds, { padding: [48, 48], maxZoom: 13, animate: false });
+    }
+  }, [hasSize, selectedWardId, wardsGeo, map]);
   return null;
 }
 
@@ -486,9 +520,10 @@ function FitToWardExtent({
   enabled: boolean;
 }) {
   const map = useMap();
+  const hasSize = useMapHasSize();
   const fitted = useRef(false);
   useEffect(() => {
-    if (!enabled || fitted.current || !wardsGeo) return;
+    if (!hasSize || !enabled || fitted.current || !wardsGeo) return;
     const bounds = leafletGeoJSON(wardsGeo as GeoJSON.GeoJsonObject).getBounds();
     if (bounds.isValid()) {
       // Whole zoom levels only (see zoomSnap on the map): fitBounds rounds
@@ -497,7 +532,7 @@ function FitToWardExtent({
       map.fitBounds(bounds, { padding: [10, 10] });
       fitted.current = true;
     }
-  }, [enabled, wardsGeo, map]);
+  }, [hasSize, enabled, wardsGeo, map]);
   return null;
 }
 

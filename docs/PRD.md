@@ -263,7 +263,7 @@ after that point has not been checked.
 | Scenario builder on Nagpur data | Done |
 | Mapbox basemap | Done |
 | Methodology, Mission, Contribute, Contact pages | Removed |
-| Automated tests updated for Nagpur (335 passing, plus 14 for the data build) | Done |
+| Automated tests updated for Nagpur (340 passing, plus 14 for the data build) | Done |
 | Zone calculator, score card, people-focused suggestions, ranking bars, hover card | Done |
 | K-means locality types | Done |
 | Live heat outlook on the dashboard | Done |

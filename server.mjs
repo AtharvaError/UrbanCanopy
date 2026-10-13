@@ -47,7 +47,10 @@ async function getCachedLiveWeather() {
 
 const server = http.createServer(async (req, res) => {
   // CORS headers
-  res.setHeader("Access-Control-Allow-Origin", "*");
+  // Only the site's own address may call this from a browser. It was "*",
+  // which let any web page spend the AI key through a visitor's browser.
+  res.setHeader("Access-Control-Allow-Origin", process.env.ALLOWED_ORIGIN || "http://localhost:3000");
+  res.setHeader("Vary", "Origin");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS, GET");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
 

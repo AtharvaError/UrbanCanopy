@@ -6,6 +6,30 @@ All notable changes to this project are documented here. Format based on
 
 ## [Unreleased]
 
+### Security
+- Security headers on every page: a content security policy naming each
+  outside host the site uses, no framing by other sites (the embed cards
+  excepted), no MIME sniffing, a strict referrer policy, HSTS, and a
+  permissions policy that leaves only geolocation, for "find my locality".
+  The `X-Powered-By` header is off.
+- The AI explainer endpoint is limited to 10 requests a minute per caller, with
+  no setup needed, and refuses bodies over 8 KB. It is the one endpoint that
+  spends money per call.
+- Error responses no longer repeat internal detail: the weather route named a
+  missing setting, and the explainer passed on the model provider's own error.
+- Next.js 16.3.5 to 16.4.0, which closes a critical advisory. The `shadcn`
+  command-line tool moves to development dependencies; it was listed as a
+  runtime one and brought a web server and its advisories with it. Runtime
+  dependencies now audit clean (22 advisories before, two critical).
+- The standalone explainer server answered any website's browser requests
+  (`Access-Control-Allow-Origin: *`). It now answers the site's own address.
+- The default site address and the example Earth Engine project were the
+  original project's. Both are now neutral.
+
+### Fixed
+- Opening the map on a locality from a link crashed the dashboard in the
+  production build. The map tried to zoom before it had been given a size.
+
 ### Added
 - Measured tree cover. The satellite stage records the share of each cell that
   ESA WorldCover maps as tree cover, and the scenario builder's tree slider now

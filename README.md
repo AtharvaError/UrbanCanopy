@@ -144,7 +144,7 @@ cd frontend
 npm test
 ```
 
-335 tests for the site. The data build has its own, including one that feeds Mumbai's
+340 tests for the site. The data build has its own, including one that feeds Mumbai's
 original inputs through the scoring code and requires the original project's published
 scores back exactly:
 

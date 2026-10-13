@@ -19,12 +19,14 @@ export async function GET(): Promise<NextResponse<WeatherApiResponse>> {
       }
     );
   } catch (err: unknown) {
-    const errorMessage = err instanceof Error ? err.message : "Weather service error";
+    // The reason stays in the server log. It can name a missing setting or the
+    // provider's own error, neither of which a visitor needs to be told.
+    console.error("[weather]", err instanceof Error ? err.message : err);
     return NextResponse.json(
       {
         ok: false,
         data: null,
-        error: errorMessage,
+        error: "Live weather is unavailable right now.",
       },
       {
         status: 503,

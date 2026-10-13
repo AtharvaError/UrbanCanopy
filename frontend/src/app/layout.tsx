@@ -19,7 +19,7 @@ const jetbrainsMono = JetBrains_Mono({
 // localhost so canonical URLs, OG images and the sitemap are correct on a
 // deploy with no env vars set; NEXT_PUBLIC_SITE_URL still overrides for
 // previews and local work.
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://uciplatform.vercel.app";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
