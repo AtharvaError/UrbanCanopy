@@ -1,0 +1,54 @@
+{
+  "started_at": "2026-10-12T07:30:14.934Z",
+  "finished_at": "2026-10-12T07:30:15.148Z",
+  "city": "nagpur",
+  "build": "open",
+  "composite_window": {
+    "start": "2026-03-01",
+    "end": "2026-05-31"
+  },
+  "stages": [
+    {
+      "id": "02",
+      "script": "02_grid.mjs",
+      "status": "skipped",
+      "returncode": null,
+      "seconds": 0
+    },
+    {
+      "id": "03",
+      "script": "03_satellite.mjs",
+      "status": "skipped",
+      "returncode": null,
+      "seconds": 0
+    },
+    {
+      "id": "04",
+      "script": "04_people.mjs",
+      "status": "skipped",
+      "returncode": null,
+      "seconds": 0
+    },
+    {
+      "id": "05",
+      "script": "05_index.mjs",
+      "status": "skipped",
+      "returncode": null,
+      "seconds": 0
+    },
+    {
+      "id": "06",
+      "script": "06_nbs.mjs",
+      "status": "skipped",
+      "returncode": null,
+      "seconds": 0
+    },
+    {
+      "id": "07",
+      "script": "07_profiles.mjs",
+      "status": "ok",
+      "returncode": 0,
+      "seconds": 0.2
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "explained_variance_pc1": 0.5191775647711091,
+  "loadings_pc1": {
+    "LST_C": 0.3807676034246121,
+    "NDVI": -0.04338503421360342,
+    "pop_density_km2": -0.536605964909391,
+    "hospital_dist_m": 0.5470437829415633,
+    "impervious_pct": -0.5156848930860856
+  },
+  "weight_source": "pca_reid2009",
+  "weights": {
+    "LST_C": 0.18817395466538928,
+    "NDVI": 0.02144072496672723,
+    "pop_density_km2": 0.2651887019953084,
+    "hospital_dist_m": 0.2703470334277262,
+    "impervious_pct": 0.25484958494484883
+  },
+  "fallback_used": false,
+  "fallback_trigger": "explained_variance_pc1 < 0.3"
+}

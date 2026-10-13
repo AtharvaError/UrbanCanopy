@@ -1,0 +1,140 @@
+{
+  "city": "nagpur",
+  "intervention": {
+    "key": "cool_roof_lime",
+    "label": "Cool roof, white lime paint",
+    "unit": "INR_per_m2",
+    "cost": 5.38,
+    "source": "NRDC, 'Frequently Asked Questions (FAQs): Cool Roofs', 2020-05-27, question 11 and Table 1.",
+    "source_url": "https://www.nrdc.org/sites/default/files/india-cool-roofs-faq-20200527.pdf"
+  },
+  "sourced_cost": true,
+  "illustrative_only": false,
+  "budget_inr": 50000000,
+  "spent_inr": 50000000,
+  "unspent_inr": 0,
+  "wards_funded": 10,
+  "wards_fully_funded": 9,
+  "total_benefit_person_degrees": 1735168,
+  "objective": "vulnerability",
+  "objective_description": "Maximise vulnerability-weighted cooling: degrees C x people exposed x area HVI, allocated by benefit per rupee.",
+  "objective_note": "Allocated by fractional knapsack, provably optimal for a divisible intervention. The choice of objective moves the answer a long way: maximising bare person-degrees sends the budget to whichever areas have the most roof and the most people, whether or not they are the areas at risk. That is why this weights by vulnerability, and why the objective is recorded in the output.",
+  "assumptions": [
+    "Albedo gain from a cool roof: +0.4. An assumption, not a measurement.",
+    "Cooling: 0.6 C per +0.1 albedo, the conservative end of Santamouris 2014's 0.57-2.3 K range.",
+    "Roof area: 40% of each area's impervious surface. Imperviousness includes roads and paving, so this is a share of it, and it is an assumption, not a roof survey.",
+    "Population from WorldPop density times area; the same modelled surface the index uses, not a census count.",
+    "Benefit is instantaneous person-degrees. It does not model intervention lifetime, maintenance, discounting, or health outcomes."
+  ],
+  "limitations": [
+    "Only cool roofs can be allocated. Cited cooling coefficients exist for tree canopy (Ziter 2019) and pocket parks (Bowler 2010), but no credible Indian unit cost was found for either, so they cannot enter a budget comparison.",
+    "Costs are 2020 prices and are not inflation-adjusted.",
+    "The areas are approximate localities, not administrative units, so an allocation by area is not an allocation to a body that could spend it."
+  ],
+  "citations": {
+    "cool_roof": "Santamouris 2014, Solar Energy 103:682-703, doi:10.1016/j.solener.2012.07.003"
+  },
+  "allocation": [
+    {
+      "ward_id": "Ajni",
+      "rank": 24,
+      "hvi": 63.48,
+      "population_est": 67206,
+      "spend_inr": 3615949,
+      "share_of_ward_treated": 1,
+      "roof_m2_treated": 672109,
+      "benefit_person_degrees": 161295
+    },
+    {
+      "ward_id": "Sitabuldi",
+      "rank": 14,
+      "hvi": 68.13,
+      "population_est": 78277,
+      "spend_inr": 4989322,
+      "share_of_ward_treated": 1,
+      "roof_m2_treated": 927383,
+      "benefit_person_degrees": 187865
+    },
+    {
+      "ward_id": "Sadar",
+      "rank": 15,
+      "hvi": 67.58,
+      "population_est": 56944,
+      "spend_inr": 3638490,
+      "share_of_ward_treated": 1,
+      "roof_m2_treated": 676299,
+      "benefit_person_degrees": 136666
+    },
+    {
+      "ward_id": "Medical Square",
+      "rank": 6,
+      "hvi": 74.86,
+      "population_est": 91385,
+      "spend_inr": 6473949,
+      "share_of_ward_treated": 1,
+      "roof_m2_treated": 1203336,
+      "benefit_person_degrees": 219325
+    },
+    {
+      "ward_id": "Rameshwari",
+      "rank": 3,
+      "hvi": 76.62,
+      "population_est": 87121,
+      "spend_inr": 6397030,
+      "share_of_ward_treated": 1,
+      "roof_m2_treated": 1189039,
+      "benefit_person_degrees": 209091
+    },
+    {
+      "ward_id": "Byramji Town",
+      "rank": 17,
+      "hvi": 66.67,
+      "population_est": 67161,
+      "spend_inr": 4306718,
+      "share_of_ward_treated": 1,
+      "roof_m2_treated": 800505,
+      "benefit_person_degrees": 161187
+    },
+    {
+      "ward_id": "Seminary Hills",
+      "rank": 27,
+      "hvi": 58.06,
+      "population_est": 88588,
+      "spend_inr": 5206658,
+      "share_of_ward_treated": 1,
+      "roof_m2_treated": 967780,
+      "benefit_person_degrees": 212611
+    },
+    {
+      "ward_id": "Pratap Nagar",
+      "rank": 5,
+      "hvi": 75.43,
+      "population_est": 60210,
+      "spend_inr": 4669851,
+      "share_of_ward_treated": 1,
+      "roof_m2_treated": 868002,
+      "benefit_person_degrees": 144503
+    },
+    {
+      "ward_id": "Itwari",
+      "rank": 1,
+      "hvi": 82.41,
+      "population_est": 81161,
+      "spend_inr": 7197981,
+      "share_of_ward_treated": 1,
+      "roof_m2_treated": 1337915,
+      "benefit_person_degrees": 194785
+    },
+    {
+      "ward_id": "Mominpura",
+      "rank": 11,
+      "hvi": 71.87,
+      "population_est": 78615,
+      "spend_inr": 3504052,
+      "share_of_ward_treated": 0.572,
+      "roof_m2_treated": 651311,
+      "benefit_person_degrees": 107840
+    }
+  ],
+  "skipped_wards": []
+}

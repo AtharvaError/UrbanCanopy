@@ -80,6 +80,8 @@ pipeline/cache/gsod/
 # data is committed, since that is what the site serves.
 data/*/
 !data/cache/
+# Nagpur is the city this project serves, and its dataset lives in a subfolder.
+!data/nagpur/
 
 # Local Claude Code skills and settings, not part of the project
 .claude/
