@@ -29,6 +29,7 @@ const STRINGS = {
   "nav.map": { en: "Map", hi: "नक्शा", mr: "नकाशा" },
   "nav.calculator": { en: "Calculator", hi: "कैलकुलेटर", mr: "कॅल्क्युलेटर" },
   "nav.simulator": { en: "Simulator", hi: "सिम्युलेटर", mr: "सिम्युलेटर" },
+  "nav.plan": { en: "City plan", hi: "शहर योजना", mr: "शहर आराखडा" },
   "nav.data": { en: "Data & method", hi: "डेटा और पद्धति", mr: "डेटा आणि पद्धत" },
   "nav.language": { en: "Language", hi: "भाषा", mr: "भाषा" },
 
@@ -127,6 +128,12 @@ const STRINGS = {
     en: "Apply tree canopy, cool roofs and pocket parks to several localities and compare before and after.",
     hi: "कई इलाकों में पेड़ों की छाया, ठंडी छतें और छोटे उद्यान लगाकर पहले और बाद की तुलना करें।",
     mr: "अनेक परिसरांत झाडांची सावली, थंड छते आणि लहान उद्याने लावून आधी व नंतरची तुलना करा.",
+  },
+  "cards.plan.title": { en: "See the city plan", hi: "शहर की योजना देखें", mr: "शहराचा आराखडा पहा" },
+  "cards.plan.text": {
+    en: "What the whole city needs this hot season, action by action, with a table to download.",
+    hi: "इस गर्मी में पूरे शहर को क्या चाहिए, हर कदम के अनुसार, डाउनलोड करने योग्य तालिका के साथ।",
+    mr: "या उन्हाळ्यात संपूर्ण शहराला काय हवे, प्रत्येक कृतीनुसार, डाउनलोड करण्यायोग्य तक्त्यासह.",
   },
   "cards.open": { en: "Open", hi: "खोलें", mr: "उघडा" },
 

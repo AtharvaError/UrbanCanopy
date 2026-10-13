@@ -31,6 +31,15 @@ All notable changes to this project are documented here. Format based on
   production build. The map tried to zoom before it had been given a size.
 
 ### Added
+- A city action plan at `/plan`: localities by priority band, each
+  people-focused action with how many localities its rule applies to and which
+  to start with, a table of every locality against every action with a CSV
+  download, and the longer-term measures added up across the city. It uses the
+  planner's own rules, so the plan and a locality's panel cannot disagree.
+- "Is the ranking reliable?" on the Data & method page. It reports the ten
+  weight-nudge runs the data build already made (which top-five localities
+  never move, which one does and what replaces it) and adds an equal-weights
+  test computed from the published formula.
 - Measured tree cover. The satellite stage records the share of each cell that
   ESA WorldCover maps as tree cover, and the scenario builder's tree slider now
   counts from it: the slider is a target, and only the canopy added above

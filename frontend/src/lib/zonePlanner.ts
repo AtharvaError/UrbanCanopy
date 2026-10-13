@@ -211,6 +211,20 @@ export type PeopleAction = {
 };
 
 /**
+ * Every people-focused action `peopleActions` can return, in the order it
+ * returns them, with its rule in words. The city plan lists actions that no
+ * single locality's panel shows together, so it needs the rules without a
+ * locality's numbers in them. The test holds this list to the function.
+ */
+export const PEOPLE_ACTION_CATALOGUE: { id: string; title: string; rule: string }[] = [
+  { id: "water", title: "Drinking-water points", rule: "More crowded than the city average." },
+  { id: "shade", title: "Shade where people wait", rule: "More built-up and less green than the city average." },
+  { id: "work-hours", title: "Midday work advisory", rule: "Hotter at the surface than the city average." },
+  { id: "outreach", title: "Outreach priority", rule: "Further from a hospital than the city average." },
+  { id: "cool-room", title: "A public cool room", rule: "Critical or High priority: a score of 65 or more." },
+];
+
+/**
  * Actions for people, as opposed to the built environment: water, shade where
  * people wait, work timing, outreach, a cool room.
  *

@@ -32,6 +32,8 @@ prediction, and **not** an official Nagpur Municipal Corporation tool.
 | **Kinds of locality** | K-means groups the localities into three types, so two that score alike for opposite reasons are told apart. |
 | **Live heat outlook** | Nagpur's air temperature now (OpenWeatherMap, refreshed every five minutes) and the next four days' highs (Open-Meteo). On a day the forecast reaches 40°C or more, the dashboard names the localities to act in first. |
 | **AI explainer** | "Explain with AI" in the planner writes a plain-language reading of a locality's numbers, in English, Hindi or Marathi. Optional: it needs a key, below. |
+| **City action plan** | The localities added up: how many need drinking water, shade, work advisories, outreach and cool rooms, where to start with each, and a table to download as CSV. |
+| **Is the ranking reliable?** | On the Data & method page: the ranking recomputed with each weight moved 20% either way, and with every factor weighted the same. Four of the top five never leave it; the fifth place depends on the weights. |
 | **Action brief** | "Download brief" in the planner opens a one-page summary of a locality to print or save as a PDF: score, reasons, actions, places and limits. |
 | **Getting hotter** | A map layer showing where the ground has warmed faster or slower than the city as a whole between 2017 and 2026. |
 | **Places** | Hospitals, schools, bus stops and markets from OpenStreetMap as pins on the map, so an action points at somewhere. |
@@ -144,7 +146,7 @@ cd frontend
 npm test
 ```
 
-340 tests for the site. The data build has its own, including one that feeds Mumbai's
+363 tests for the site. The data build has its own, including one that feeds Mumbai's
 original inputs through the scoring code and requires the original project's published
 scores back exactly:
 
@@ -192,6 +194,9 @@ Stated in the app as well, on the calculator page.
   or more built-up average 44.6°C; cells under 20% built-up average 46.4°C. Top
   localities rank high for crowding and built-up cover, not for being the hottest
   ground.
+- **The ranking's top is steadier than its middle.** Moving any one weight by 20% keeps
+  at least four of the top five, but weighting every factor equally keeps only three,
+  and half the localities then move more than three places.
 - **The factors partly pull against each other,** so the statistical weights come out
   close to equal and no weighting is the single right one. Have them reviewed before
   using the ranking for a real decision.

@@ -95,6 +95,8 @@ and they do not say what to do.
 | F22 | Action brief | A one-page printable summary per locality. | Should | Built |
 | F23 | Hindi and Marathi | A language switch for the main labels and the AI explanation. | Should | Built |
 | F24 | Data & method page | Formula, what is measured or assumed, locality types, sources. | Should | Built |
+| F25 | City action plan | The planner's suggestions added up across the city, with where to start and a CSV download. | Should | Built |
+| F26 | Ranking reliability panel | How far the top of the ranking depends on the weights, from a weight-nudge test and an equal-weights test. | Should | Built |
 | F17 | AI explainer | A plain-language reading of a locality's numbers, generated on request through a local server. Optional; needs a key. | Could | Built |
 | F18 | Live temperature | Current air temperature from OpenWeatherMap in the header, landing page and outlook bar, refreshed every five minutes. Optional; needs a key. | Should | Built |
 | F16 | Live heat outlook | Live air temperature (OpenWeatherMap) and four-day forecast highs (Open-Meteo) on the dashboard. A stated threshold rule turns the hottest day into an alert level and names the localities to act in first. Weather never changes a score. | Should | Built |
@@ -263,7 +265,7 @@ after that point has not been checked.
 | Scenario builder on Nagpur data | Done |
 | Mapbox basemap | Done |
 | Methodology, Mission, Contribute, Contact pages | Removed |
-| Automated tests updated for Nagpur (340 passing, plus 14 for the data build) | Done |
+| Automated tests updated for Nagpur (363 passing, plus 14 for the data build) | Done |
 | Zone calculator, score card, people-focused suggestions, ranking bars, hover card | Done |
 | K-means locality types | Done |
 | Live heat outlook on the dashboard | Done |

@@ -5,6 +5,7 @@ const QUICK_LINKS = [
   { href: "/dashboard", label: "Map" },
   { href: "/calculator", label: "Calculator" },
   { href: "/simulate", label: "Simulator" },
+  { href: "/plan", label: "City plan" },
   { href: "/data", label: "Data & method" },
 ];
 

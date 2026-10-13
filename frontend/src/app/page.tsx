@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import Link from "next/link";
-import { ArrowRight, Calculator, Map as MapIcon, SlidersHorizontal } from "lucide-react";
+import { ArrowRight, Calculator, ClipboardList, Map as MapIcon, SlidersHorizontal } from "lucide-react";
 import SiteHeader from "./components/SiteHeader";
 import SiteFooter from "./components/SiteFooter";
 import Reveal from "./components/Reveal";
@@ -47,6 +47,7 @@ const CARDS: { href: string; icon: typeof MapIcon; title: StringKey; text: Strin
   { href: "/dashboard", icon: MapIcon, title: "cards.map.title", text: "cards.map.text" },
   { href: "/calculator", icon: Calculator, title: "cards.calc.title", text: "cards.calc.text" },
   { href: "/simulate", icon: SlidersHorizontal, title: "cards.sim.title", text: "cards.sim.text" },
+  { href: "/plan", icon: ClipboardList, title: "cards.plan.title", text: "cards.plan.text" },
 ];
 
 export default function Home() {
@@ -130,7 +131,7 @@ export default function Home() {
               <h2 className="text-xl font-semibold text-foreground">
                 <T k="cards.title" />
               </h2>
-              <div className="mt-6 grid gap-6 md:grid-cols-3">
+              <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
                 {CARDS.map((card) => (
                   <Link
                     key={card.href}

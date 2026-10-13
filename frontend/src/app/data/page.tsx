@@ -7,9 +7,11 @@ import SiteFooter from "../components/SiteFooter";
 import Card from "../components/Card";
 import ScoreExplainer from "../components/ScoreExplainer";
 import LocalityTypes from "../components/LocalityTypes";
+import ReliabilityPanel from "../components/ReliabilityPanel";
 import { SourceAttribution } from "../components/Citation";
 import { ACTIVE_CITY } from "@/lib/city";
 import { SOURCES } from "@/lib/citations";
+import { equalWeightCheck, summariseNudges, type Sensitivity } from "@/lib/reliability";
 import { scoreModelFrom } from "@/lib/scoreFormula";
 import type { WardProfileData } from "@/lib/wardProfile";
 
@@ -19,9 +21,9 @@ export const metadata: Metadata = {
     "How the heat priority score is computed, what each number is measured from, what is estimated, and the limits of the tool.",
 };
 
-function loadProfiles(): WardProfileData | null {
+function readPublic<T>(name: string): T | null {
   try {
-    return JSON.parse(fs.readFileSync(path.join(process.cwd(), "public", "ward_profiles.json"), "utf-8"));
+    return JSON.parse(fs.readFileSync(path.join(process.cwd(), "public", name), "utf-8")) as T;
   } catch {
     return null;
   }
@@ -42,8 +44,9 @@ const BASIS: { what: string; basis: "Measured" | "Modelled" | "Mapped by volunte
 ];
 
 export default function DataPage() {
-  const data = loadProfiles();
+  const data = readPublic<WardProfileData>("ward_profiles.json");
   const model = data ? scoreModelFrom(data) : null;
+  const sensitivity = readPublic<Sensitivity>("sensitivity.json");
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -68,6 +71,10 @@ export default function DataPage() {
             <p className="rounded-xl border border-border bg-surface p-6 text-sm text-muted-foreground">
               The scoring formula needs the published locality profiles, which this build does not have.
             </p>
+          )}
+
+          {sensitivity && (
+            <ReliabilityPanel nudges={summariseNudges(sensitivity)} equal={data && model ? equalWeightCheck(data, model) : null} />
           )}
 
           <Card id="measured-or-estimated">

@@ -11,11 +11,12 @@ import type { StringKey } from "@/lib/i18n";
 import { useLanguage } from "@/lib/useLanguage";
 import { useWeather } from "@/lib/useWeather";
 
-/** In the order a visitor uses them: see the map, compare, test a plan, check the method. */
+/** In the order a visitor uses them: see the map, compare, test a measure, read the city plan, check the method. */
 const NAV: { href: string; label: StringKey }[] = [
   { href: "/dashboard", label: "nav.map" },
   { href: "/calculator", label: "nav.calculator" },
   { href: "/simulate", label: "nav.simulator" },
+  { href: "/plan", label: "nav.plan" },
   { href: "/data", label: "nav.data" },
 ];
 
@@ -63,7 +64,7 @@ export default function SiteHeader({ compact = false }: { compact?: boolean }) {
                 key={item.href}
                 href={item.href}
                 aria-current={active ? "page" : undefined}
-                className={`rounded px-3 py-1.5 text-sm transition-colors ${
+                className={`whitespace-nowrap rounded px-2.5 py-1.5 text-sm transition-colors ${
                   active
                     ? "font-semibold text-foreground"
                     : "text-muted-foreground hover:bg-surface-hover hover:text-foreground"
@@ -78,7 +79,8 @@ export default function SiteHeader({ compact = false }: { compact?: boolean }) {
         <div className="hidden items-center gap-3 md:flex">
           {weather && tempFormatted && (
             <div
-              className="flex items-center gap-1.5 rounded-full border border-border/80 bg-surface/70 px-2.5 py-1 text-xs text-muted-foreground"
+              // From lg up only: between md and lg the five menu links need the room.
+              className="hidden items-center gap-1.5 whitespace-nowrap rounded-full border border-border/80 bg-surface/70 px-2.5 py-1 text-xs text-muted-foreground lg:flex"
               title={`Live OpenWeatherMap for ${weather.city || "Nagpur"}${
                 isStale && lastUpdatedFormatted ? ` (stale, last updated ${lastUpdatedFormatted})` : ""
               }`}

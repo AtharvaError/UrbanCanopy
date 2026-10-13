@@ -1,0 +1,146 @@
+{
+  "baseline_top5": [
+    "Itwari",
+    "Shanti Nagar",
+    "Rameshwari",
+    "Indora",
+    "Pratap Nagar"
+  ],
+  "perturbation_pct": 0.2,
+  "n_runs": 10,
+  "mean_kendall_tau": 0.9360919540229886,
+  "mean_top5_overlap": 4.6,
+  "all_top5_stable": false,
+  "runs": [
+    {
+      "indicator": "LST_C",
+      "perturbation": "+20%",
+      "kendall_tau": 0.9448275862068966,
+      "top5_overlap": 4,
+      "top5_ranking": [
+        "Itwari",
+        "Shanti Nagar",
+        "Rameshwari",
+        "Indora",
+        "Trimurti Nagar"
+      ]
+    },
+    {
+      "indicator": "LST_C",
+      "perturbation": "-20%",
+      "kendall_tau": 0.9632183908045977,
+      "top5_overlap": 5,
+      "top5_ranking": [
+        "Itwari",
+        "Shanti Nagar",
+        "Rameshwari",
+        "Indora",
+        "Pratap Nagar"
+      ]
+    },
+    {
+      "indicator": "NDVI",
+      "perturbation": "+20%",
+      "kendall_tau": 0.9816091954022989,
+      "top5_overlap": 5,
+      "top5_ranking": [
+        "Itwari",
+        "Shanti Nagar",
+        "Rameshwari",
+        "Indora",
+        "Pratap Nagar"
+      ]
+    },
+    {
+      "indicator": "NDVI",
+      "perturbation": "-20%",
+      "kendall_tau": 0.9954022988505747,
+      "top5_overlap": 5,
+      "top5_ranking": [
+        "Itwari",
+        "Shanti Nagar",
+        "Rameshwari",
+        "Indora",
+        "Pratap Nagar"
+      ]
+    },
+    {
+      "indicator": "pop_density_km2",
+      "perturbation": "+20%",
+      "kendall_tau": 0.9172413793103448,
+      "top5_overlap": 5,
+      "top5_ranking": [
+        "Itwari",
+        "Shanti Nagar",
+        "Rameshwari",
+        "Pratap Nagar",
+        "Indora"
+      ]
+    },
+    {
+      "indicator": "pop_density_km2",
+      "perturbation": "-20%",
+      "kendall_tau": 0.8620689655172413,
+      "top5_overlap": 4,
+      "top5_ranking": [
+        "Itwari",
+        "Shanti Nagar",
+        "Trimurti Nagar",
+        "Rameshwari",
+        "Indora"
+      ]
+    },
+    {
+      "indicator": "hospital_dist_m",
+      "perturbation": "+20%",
+      "kendall_tau": 0.9126436781609195,
+      "top5_overlap": 4,
+      "top5_ranking": [
+        "Itwari",
+        "Shanti Nagar",
+        "Trimurti Nagar",
+        "Rameshwari",
+        "Indora"
+      ]
+    },
+    {
+      "indicator": "hospital_dist_m",
+      "perturbation": "-20%",
+      "kendall_tau": 0.9126436781609195,
+      "top5_overlap": 5,
+      "top5_ranking": [
+        "Itwari",
+        "Shanti Nagar",
+        "Rameshwari",
+        "Indora",
+        "Pratap Nagar"
+      ]
+    },
+    {
+      "indicator": "impervious_pct",
+      "perturbation": "+20%",
+      "kendall_tau": 0.9494252873563218,
+      "top5_overlap": 5,
+      "top5_ranking": [
+        "Itwari",
+        "Shanti Nagar",
+        "Rameshwari",
+        "Indora",
+        "Pratap Nagar"
+      ]
+    },
+    {
+      "indicator": "impervious_pct",
+      "perturbation": "-20%",
+      "kendall_tau": 0.9218390804597701,
+      "top5_overlap": 4,
+      "top5_ranking": [
+        "Itwari",
+        "Shanti Nagar",
+        "Rameshwari",
+        "Trimurti Nagar",
+        "Indora"
+      ]
+    }
+  ]
+}

@@ -44,6 +44,7 @@ const PUBLISHED = [
   "hero_city.json",
   "hero_region.json",
   "hvi_pca_log.json",
+  "sensitivity.json",
   "pipeline_run_log.json",
 ];
 
