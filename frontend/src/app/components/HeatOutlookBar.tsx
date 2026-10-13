@@ -4,16 +4,17 @@ import { useEffect, useState } from "react";
 import { Flame, Info, ShieldCheck, TriangleAlert, type LucideIcon } from "lucide-react";
 import { ACTIVE_CITY } from "@/lib/city";
 import { useWardData } from "@/lib/useWardData";
+import { useWeather } from "@/lib/useWeather";
 import {
   dayLabel,
-  fetchCityWeather,
+  fetchForecastHighs,
   HEAT_ALERT_LABELS,
   HEAT_ALERT_THRESHOLDS_C,
   heatAlertFor,
   heatOutlook,
-  type CityWeather,
+  type DayOutlook,
   type HeatAlertLevel,
-} from "@/lib/weather";
+} from "@/lib/heatOutlook";
 import { priorityFor } from "@/lib/zonePlanner";
 
 /** How many localities an alert names. Enough to start with, few enough to read. */
@@ -45,45 +46,46 @@ function whenPhrase(date: string, today: string): string {
  * threshold it names the localities to start with, and each name opens that
  * locality's planner, where the actions are.
  *
- * When the weather service cannot be reached the bar says so. It never shows a
- * remembered or invented reading.
+ * Two sources, each shown only when it answers. The reading now is
+ * OpenWeatherMap's, shared with the header through `useWeather`; the forecast
+ * highs are Open-Meteo's. When one cannot be reached its part of the bar says
+ * so. Nothing here shows an invented reading.
  */
 export default function HeatOutlookBar({ onSelectWard }: { onSelectWard: (wardId: string) => void }) {
-  const [weather, setWeather] = useState<CityWeather | null>(null);
-  const [status, setStatus] = useState<"loading" | "ok" | "unavailable">("loading");
+  const { weather, status: nowStatus, isStale, tempFormatted, feelsLikeFormatted, lastUpdatedFormatted } = useWeather();
+  const [days, setDays] = useState<DayOutlook[] | null>(null);
+  const [forecastStatus, setForecastStatus] = useState<"loading" | "ok" | "unavailable">("loading");
   const [showRule, setShowRule] = useState(false);
   const { wards } = useWardData();
 
   useEffect(() => {
     let cancelled = false;
-    fetchCityWeather(ACTIVE_CITY).then((result) => {
+    fetchForecastHighs(ACTIVE_CITY).then((result) => {
       if (cancelled) return;
-      setWeather(result);
-      setStatus(result ? "ok" : "unavailable");
+      setDays(result);
+      setForecastStatus(result ? "ok" : "unavailable");
     });
     return () => {
       cancelled = true;
     };
   }, []);
 
-  const outlook = weather ? heatOutlook(weather.days) : null;
+  const outlook = days ? heatOutlook(days) : null;
+  const nowLoading = weather === null && (nowStatus === "idle" || nowStatus === "loading");
 
-  if (status !== "ok" || !weather || !outlook) {
+  if (weather === null && !outlook) {
     return (
       <div className="border-b border-border bg-background px-6 py-2 text-xs text-muted-foreground" role="status">
-        {status === "loading" ? `Checking ${ACTIVE_CITY.name}'s weather…` : "Live weather is unavailable right now."}
+        {nowLoading || forecastStatus === "loading"
+          ? `Checking ${ACTIVE_CITY.name}'s weather…`
+          : "Live weather is unavailable right now."}
       </div>
     );
   }
 
-  const today = weather.days[0].date;
-  const style = LEVEL_STYLE[outlook.level];
-  const LevelIcon = style.icon;
-  const lastDay = weather.days[weather.days.length - 1];
-
   // Wards arrive ranked, most concerning first.
   const actFirst =
-    outlook.level === "none"
+    !outlook || outlook.level === "none"
       ? []
       : (wards ?? [])
           .filter((w) => w.properties.HVI !== null && ["Critical", "High"].includes(priorityFor(w.properties.HVI)))
@@ -95,72 +97,60 @@ export default function HeatOutlookBar({ onSelectWard }: { onSelectWard: (wardId
       <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
         <p className="flex items-center gap-2 text-foreground">
           <span className="relative flex h-2 w-2 shrink-0" aria-hidden>
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand-emerald/70" />
-            <span className="relative inline-flex h-2 w-2 rounded-full bg-brand-emerald" />
+            {weather && !isStale && (
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand-emerald/70" />
+            )}
+            <span
+              className={`relative inline-flex h-2 w-2 rounded-full ${
+                weather ? (isStale ? "bg-amber-500" : "bg-brand-emerald") : "bg-muted-foreground"
+              }`}
+            />
           </span>
           <span className="font-medium uppercase tracking-wide text-muted-foreground">Live</span>
-          <span>
-            {ACTIVE_CITY.name} now{" "}
-            <span className="font-mono text-sm font-semibold">{weather.temperatureC.toFixed(1)}°C</span> air
-          </span>
-          {weather.feelsLikeC !== null && (
-            <span className="text-muted-foreground">
-              feels like <span className="font-mono text-foreground">{weather.feelsLikeC.toFixed(1)}°C</span>
-            </span>
-          )}
-          {weather.humidityPct !== null && (
-            <span className="hidden text-muted-foreground sm:inline">
-              humidity <span className="font-mono text-foreground">{Math.round(weather.humidityPct)}%</span>
-            </span>
-          )}
-        </p>
-
-        <ul className="flex items-center gap-3" aria-label="Forecast highs">
-          {weather.days.map((day) => {
-            const hot = heatAlertFor(day.maxC) !== "none";
-            return (
-              <li key={day.date} className="flex items-baseline gap-1 text-muted-foreground">
-                <span>{dayLabel(day.date, today, "short")}</span>
-                <span className={`font-mono text-foreground ${hot ? "font-semibold underline decoration-2 underline-offset-2" : ""}`}>
-                  {Math.round(day.maxC)}°
-                </span>
-              </li>
-            );
-          })}
-        </ul>
-
-        <p className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 text-foreground" role="status">
-          <span className={`inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 font-medium ${style.pill}`}>
-            <LevelIcon className={`h-3.5 w-3.5 shrink-0 ${style.iconColor}`} aria-hidden />
-            {HEAT_ALERT_LABELS[outlook.level]}
-          </span>
-          {outlook.level === "none" ? (
-            <span className="text-muted-foreground">
-              Highs stay below {HEAT_ALERT_THRESHOLDS_C.watch}°C through {dayLabel(lastDay.date, today)}.
-            </span>
-          ) : (
+          {weather ? (
             <>
               <span>
-                A high of <span className="font-mono font-semibold">{outlook.peak.maxC.toFixed(1)}°C</span> is forecast{" "}
-                {whenPhrase(outlook.peak.date, today)}.
+                {ACTIVE_CITY.name} now <span className="font-mono text-sm font-semibold">{tempFormatted}</span> air
               </span>
-              {actFirst.length > 0 && (
-                <span className="flex flex-wrap items-center gap-1.5">
-                  <span className="text-muted-foreground">Act first in</span>
-                  {actFirst.map((wardId) => (
-                    <button
-                      key={wardId}
-                      onClick={() => onSelectWard(wardId)}
-                      className="rounded-full border border-border bg-surface px-2 py-0.5 font-medium hover:bg-surface-hover"
-                    >
-                      {wardId}
-                    </button>
-                  ))}
-                </span>
+              <span className="text-muted-foreground">
+                feels like <span className="font-mono text-foreground">{feelsLikeFormatted}</span>
+              </span>
+              {isStale && lastUpdatedFormatted && (
+                <span className="text-muted-foreground">last updated {lastUpdatedFormatted}</span>
               )}
             </>
+          ) : (
+            <span className="text-muted-foreground">
+              {nowLoading ? "Checking the temperature now…" : "Temperature now is unavailable"}
+            </span>
           )}
         </p>
+
+        {days && outlook ? (
+          <>
+            <ul className="flex items-center gap-3" aria-label="Forecast highs">
+              {days.map((day) => {
+                const hot = heatAlertFor(day.maxC) !== "none";
+                return (
+                  <li key={day.date} className="flex items-baseline gap-1 text-muted-foreground">
+                    <span>{dayLabel(day.date, days[0].date, "short")}</span>
+                    <span
+                      className={`font-mono text-foreground ${hot ? "font-semibold underline decoration-2 underline-offset-2" : ""}`}
+                    >
+                      {Math.round(day.maxC)}°
+                    </span>
+                  </li>
+                );
+              })}
+            </ul>
+
+            <OutlookStatement outlook={outlook} days={days} actFirst={actFirst} onSelectWard={onSelectWard} />
+          </>
+        ) : (
+          <p className="text-muted-foreground" role="status">
+            {forecastStatus === "loading" ? "Checking the forecast…" : "The forecast is unavailable right now."}
+          </p>
+        )}
 
         <button
           onClick={() => setShowRule((v) => !v)}
@@ -174,15 +164,68 @@ export default function HeatOutlookBar({ onSelectWard }: { onSelectWard: (wardId
 
       {showRule && (
         <p className="mt-2 max-w-4xl leading-relaxed text-muted-foreground">
-          Readings and forecast highs are live from Open-Meteo, for the city as a whole. A forecast high of{" "}
-          {HEAT_ALERT_THRESHOLDS_C.heatWave}°C or more is a heat wave and {HEAT_ALERT_THRESHOLDS_C.severe}°C or more a
-          severe one, the India Meteorological Department&apos;s criteria on actual temperature.{" "}
-          {HEAT_ALERT_THRESHOLDS_C.watch} to {HEAT_ALERT_THRESHOLDS_C.heatWave}°C is shown as a heat watch, which is
-          this tool&apos;s own label and not an official declaration. Weather does not change any locality&apos;s
-          score: the score says where to act, the forecast says when. The localities named on an alert day are the
-          highest-ranked ones in the Critical and High bands.
+          The temperature now is live from OpenWeatherMap, refreshed every five minutes. Forecast highs are live from
+          Open-Meteo. Both are for the city as a whole. A forecast high of {HEAT_ALERT_THRESHOLDS_C.heatWave}°C or more
+          is a heat wave and {HEAT_ALERT_THRESHOLDS_C.severe}°C or more a severe one, the India Meteorological
+          Department&apos;s criteria on actual temperature. {HEAT_ALERT_THRESHOLDS_C.watch} to{" "}
+          {HEAT_ALERT_THRESHOLDS_C.heatWave}°C is shown as a heat watch, which is this tool&apos;s own label and not an
+          official declaration. Weather does not change any locality&apos;s score: the score says where to act, the
+          forecast says when. The localities named on an alert day are the highest-ranked ones in the Critical and
+          High bands.
         </p>
       )}
     </section>
+  );
+}
+
+function OutlookStatement({
+  outlook,
+  days,
+  actFirst,
+  onSelectWard,
+}: {
+  outlook: NonNullable<ReturnType<typeof heatOutlook>>;
+  days: DayOutlook[];
+  actFirst: string[];
+  onSelectWard: (wardId: string) => void;
+}) {
+  const today = days[0].date;
+  const lastDay = days[days.length - 1];
+  const style = LEVEL_STYLE[outlook.level];
+  const LevelIcon = style.icon;
+
+  return (
+    <p className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 text-foreground" role="status">
+      <span className={`inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 font-medium ${style.pill}`}>
+        <LevelIcon className={`h-3.5 w-3.5 shrink-0 ${style.iconColor}`} aria-hidden />
+        {HEAT_ALERT_LABELS[outlook.level]}
+      </span>
+      {outlook.level === "none" ? (
+        <span className="text-muted-foreground">
+          Highs stay below {HEAT_ALERT_THRESHOLDS_C.watch}°C through {dayLabel(lastDay.date, today)}.
+        </span>
+      ) : (
+        <>
+          <span>
+            A high of <span className="font-mono font-semibold">{outlook.peak.maxC.toFixed(1)}°C</span> is forecast{" "}
+            {whenPhrase(outlook.peak.date, today)}.
+          </span>
+          {actFirst.length > 0 && (
+            <span className="flex flex-wrap items-center gap-1.5">
+              <span className="text-muted-foreground">Act first in</span>
+              {actFirst.map((wardId) => (
+                <button
+                  key={wardId}
+                  onClick={() => onSelectWard(wardId)}
+                  className="rounded-full border border-border bg-surface px-2 py-0.5 font-medium hover:bg-surface-hover"
+                >
+                  {wardId}
+                </button>
+              ))}
+            </span>
+          )}
+        </>
+      )}
+    </p>
   );
 }

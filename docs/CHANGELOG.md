@@ -43,8 +43,16 @@ All notable changes to this project are documented here. Format based on
   reads as a chart of the ranking.
 - A card that follows the pointer over the map with the locality's band, score,
   rank, main driver and four measured values.
-- A live heat outlook on the dashboard: Nagpur's air temperature, "feels like"
-  and humidity now, and the next four days' forecast highs, from Open-Meteo. The
+- An AI heat-risk explainer in the planner. "Explain with AI" sends a locality's
+  published numbers to a small local server (`server.mjs`), which asks an
+  Experiential Labs model for a plain-language reading. Needs `EXPLABS_API_KEY`.
+- Live air temperature from OpenWeatherMap, through a server route
+  (`/api/weather`) that keeps the key off the browser and caches for five
+  minutes. Shown in the header, on the landing page and in the heat outlook
+  bar, from one shared timer. On a failed refresh the last good reading stays,
+  marked with the time it was taken. Needs `OPENWEATHER_API_KEY`.
+- A live heat outlook on the dashboard: Nagpur's air temperature and "feels
+  like" now, and the next four days' forecast highs, from Open-Meteo. The
   hottest day sets an alert level by stated thresholds (40, 45 and 47°C), and on
   an alert day the bar names the three highest-ranked Critical or High
   localities, each opening its planner. Weather never enters the score. When

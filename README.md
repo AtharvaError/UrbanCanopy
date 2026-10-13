@@ -30,7 +30,8 @@ prediction, and **not** an official Nagpur Municipal Corporation tool.
 | **Zone calculator** | Pick 3 to 5 localities, edit any indicator, drag any weight. Score, band and rank update as you type. |
 | **How the score works** | The formula in one line, each weight, the bands, and six assumptions and limits. |
 | **Kinds of locality** | K-means groups the localities into three types, so two that score alike for opposite reasons are told apart. |
-| **Live heat outlook** | Nagpur's air temperature now and the next four days' highs, live from Open-Meteo. On a day the forecast reaches 40°C or more, the dashboard names the localities to act in first. |
+| **Live heat outlook** | Nagpur's air temperature now (OpenWeatherMap, refreshed every five minutes) and the next four days' highs (Open-Meteo). On a day the forecast reaches 40°C or more, the dashboard names the localities to act in first. |
+| **AI explainer** | "Explain with AI" in the planner writes a plain-language reading of a locality's numbers. Optional: it needs its own small server and key, below. |
 | **Scenario builder** | Apply tree canopy, cool roofs and pocket parks to several localities and compare before-and-after maps. |
 
 ## The score in one line
@@ -69,18 +70,36 @@ npm install
 npm run dev
 ```
 
-Open `http://localhost:3000`. The site runs entirely off the data files committed in
-`frontend/public/`, so there is no database and no API key to set up.
+Open `http://localhost:3000`. The map, ranking, planner, calculator and scenario
+builder run entirely off the data files committed in `frontend/public/`, so there is
+no database to set up and they need no API key.
 
-**Optional: Mapbox basemap.** Create `frontend/.env.local` containing your own
-public token, and restart the dev server:
+### Optional keys
 
+Three features use a key. Each is switched off, with a plain message, when its key is
+missing. Keys go in files that git ignores; do not commit one.
+
+| Feature | Put this in | Variable |
+|---|---|---|
+| Mapbox basemap. Without it the map uses a key-free Esri basemap. | `frontend/.env.local` | `NEXT_PUBLIC_MAPBOX_TOKEN=pk.your_token_here` |
+| Live temperature, from [OpenWeatherMap](https://openweathermap.org/api). | `frontend/.env.local` | `OPENWEATHER_API_KEY=your_key_here` |
+| AI explainer, from Experiential Labs. | `.env` in the project root | `EXPLABS_API_KEY=your_key_here` |
+
+Restart the dev server after changing `frontend/.env.local`.
+
+The AI explainer also needs its own small server, run from the project root in a
+second terminal:
+
+```bash
+npm install
 ```
-NEXT_PUBLIC_MAPBOX_TOKEN=pk.your_token_here
+
+```bash
+npm run server
 ```
 
-Without it the map falls back to a key-free Esri basemap. `.env.local` is ignored by
-git; do not commit a token.
+It listens on `http://localhost:3001`, which is the address the site calls, so the
+explainer works on your own machine and not on a hosted copy of the site.
 
 ## Where the data comes from
 
@@ -127,7 +146,7 @@ cd frontend
 npm test
 ```
 
-303 tests for the site. The data build has its own, including one that feeds Mumbai's
+312 tests for the site. The data build has its own, including one that feeds Mumbai's
 original inputs through the scoring code and requires the original project's published
 scores back exactly:
 
@@ -143,6 +162,7 @@ npm test
 
 ```
 frontend/         Next.js site: map, planner, calculator, scenario builder
+server.mjs        Small local server for the AI explainer
 pipeline/open/    Node data build for Nagpur (satellite, population, scoring, clustering)
 pipeline/         The original Python + Earth Engine pipeline (used for Mumbai)
 config/cities/    One JSON file per city: bounding box, grid size, season
@@ -160,6 +180,8 @@ Stated in the app as well, on the calculator page.
   predict illness or temperature.
 - **Surface, not air.** Heat is land surface temperature from satellite, which is the
   temperature of roofs, roads and soil.
+- **The AI explanation is generated text.** It restates the locality's published
+  numbers in plain language and can be wrong. It adds nothing to the score.
 - **Live weather does not change the score.** It is one reading for the whole city, so
   it cannot rank localities. The score says where to act; the forecast says when. The
   alert uses the India Meteorological Department's criteria on actual temperature (45°C
