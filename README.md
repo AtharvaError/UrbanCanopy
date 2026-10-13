@@ -204,24 +204,3 @@ Stated in the app as well, on the calculator page.
   does not clear a site for planting.
 - **Cooling estimates come from studies of other cities** (Ziter 2019, Santamouris
   2014, Bowler 2010) and are indicative only.
-
-## Credits
-
-UrbanCanopy is built on **[UCIP](https://github.com/AnayDhawan/ucip)** by Anay Dhawan,
-an open-source heat-vulnerability platform for Mumbai (Apache 2.0,
-doi:[10.5281/zenodo.22923919](https://doi.org/10.5281/zenodo.22923919)). The index
-method, the plantability filter, the recommendation rules and much of the interface
-are UCIP's. This project adds the Nagpur dataset and its account-free data build, the
-zone planner, the calculator, the scenario builder, the locality clustering and the
-people-focused suggestions.
-
-The scenario builder's interaction was modelled on
-[urban-heat-mitigation](https://github.com/Zephyrex21/urban-heat-mitigation) by
-Zephyrex21. None of its code or its trained model is used.
-
-Data: Landsat (USGS), ESA WorldCover, WorldPop (CC BY 4.0), OpenStreetMap contributors
-(ODbL). Basemap by Mapbox.
-
-## License
-
-Apache 2.0, see [LICENSE](LICENSE).
