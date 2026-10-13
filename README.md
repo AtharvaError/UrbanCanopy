@@ -31,7 +31,11 @@ prediction, and **not** an official Nagpur Municipal Corporation tool.
 | **How the score works** | The formula in one line, each weight, the bands, and six assumptions and limits. |
 | **Kinds of locality** | K-means groups the localities into three types, so two that score alike for opposite reasons are told apart. |
 | **Live heat outlook** | Nagpur's air temperature now (OpenWeatherMap, refreshed every five minutes) and the next four days' highs (Open-Meteo). On a day the forecast reaches 40°C or more, the dashboard names the localities to act in first. |
-| **AI explainer** | "Explain with AI" in the planner writes a plain-language reading of a locality's numbers. Optional: it needs its own small server and key, below. |
+| **AI explainer** | "Explain with AI" in the planner writes a plain-language reading of a locality's numbers, in English, Hindi or Marathi. Optional: it needs a key, below. |
+| **Action brief** | "Download brief" in the planner opens a one-page summary of a locality to print or save as a PDF: score, reasons, actions, places and limits. |
+| **Getting hotter** | A map layer showing where the ground has warmed faster or slower than the city as a whole between 2017 and 2026. |
+| **Places** | Hospitals, schools, bus stops and markets from OpenStreetMap as pins on the map, so an action points at somewhere. |
+| **Hindi and Marathi** | A language switch for the main labels: menu, landing page, dashboard, planner headings and the people-focused actions. |
 | **Scenario builder** | Apply tree canopy, cool roofs and pocket parks to several localities and compare before-and-after maps. |
 
 ## The score in one line
@@ -83,23 +87,14 @@ missing. Keys go in files that git ignores; do not commit one.
 |---|---|---|
 | Mapbox basemap. Without it the map uses a key-free Esri basemap. | `frontend/.env.local` | `NEXT_PUBLIC_MAPBOX_TOKEN=pk.your_token_here` |
 | Live temperature, from [OpenWeatherMap](https://openweathermap.org/api). | `frontend/.env.local` | `OPENWEATHER_API_KEY=your_key_here` |
-| AI explainer, from Experiential Labs. | `.env` in the project root | `EXPLABS_API_KEY=your_key_here` |
+| AI explainer, from Experiential Labs. | `frontend/.env.local` | `EXPLABS_API_KEY=your_key_here` |
 
 Restart the dev server after changing `frontend/.env.local`.
 
-The AI explainer also needs its own small server, run from the project root in a
-second terminal:
-
-```bash
-npm install
-```
-
-```bash
-npm run server
-```
-
-It listens on `http://localhost:3001`, which is the address the site calls, so the
-explainer works on your own machine and not on a hosted copy of the site.
+The AI explainer runs inside the site (`/api/heat-explain`), so it works on a hosted
+copy as well as on your own machine, and the key never reaches the browser.
+`server.mjs` in the project root is the same explainer as a standalone server, kept
+for running it apart from the site; the site does not need it.
 
 ## Where the data comes from
 
@@ -108,6 +103,9 @@ explainer works on your own machine and not on a hosted copy of the site.
 | Land surface temperature | Landsat 8/9 Collection 2 (USGS) | Median of 22 scenes, March to May 2026 |
 | Green cover (NDVI) | Landsat 8/9 | Same scenes, plus a 2017 baseline for change |
 | Built-up surface | ESA WorldCover 2021 | Share of each cell that is built-up |
+| Tree cover (not in the score) | ESA WorldCover 2021 | Share of each cell mapped as tree cover; the starting point for the tree slider |
+| Warming trend (not in the score) | Landsat 8/9 | The same season in 2017 and 2026, read against the city's own change |
+| Places (not in the score) | OpenStreetMap | 412 hospitals, 75 schools, 21 bus stops, 3 markets |
 | Population density | WorldPop 2020 | 1 km estimate |
 | Distance to a hospital | OpenStreetMap | 439 mapped hospitals |
 | City outline, locality names | OpenStreetMap | Relation 12969115, "Nagpur City" |
@@ -146,7 +144,7 @@ cd frontend
 npm test
 ```
 
-312 tests for the site. The data build has its own, including one that feeds Mumbai's
+335 tests for the site. The data build has its own, including one that feeds Mumbai's
 original inputs through the scoring code and requires the original project's published
 scores back exactly:
 
@@ -162,7 +160,7 @@ npm test
 
 ```
 frontend/         Next.js site: map, planner, calculator, scenario builder
-server.mjs        Small local server for the AI explainer
+server.mjs        The AI explainer as a standalone server (optional)
 pipeline/open/    Node data build for Nagpur (satellite, population, scoring, clustering)
 pipeline/         The original Python + Earth Engine pipeline (used for Mumbai)
 config/cities/    One JSON file per city: bounding box, grid size, season
@@ -200,6 +198,16 @@ Stated in the app as well, on the calculator page.
 - **Coarse or incomplete inputs.** Population is a 1 km model. Hospitals are as mapped
   in OpenStreetMap. There is no open data on outdoor workers, older residents or
   informal housing.
+- **Tree cover is land mapped as trees at 10 m.** It stands in for canopy cover and
+  runs low in built-up areas, where a street tree is narrower than a pixel.
+- **The warming layer compares two seasons, not a trend line.** 2026's hot season was
+  cooler overall than 2017's, so each cell is read against the city-wide change. It
+  shows where the city warmed faster or slower than itself, not by how much it warmed.
+- **Places are as mapped by volunteers.** Bus stops and markets are far from complete
+  in OpenStreetMap; a locality with none drawn is not a locality with none.
+- **Translations cover the main labels.** Numbers, place names and the method and
+  limits text stay in English. The Hindi and Marathi wording has not been reviewed by
+  a native-speaking subject expert.
 - **Plantability is not calibrated for central India.** It is a land-cover screen and
   does not clear a site for planting.
 - **Cooling estimates come from studies of other cities** (Ziter 2019, Santamouris

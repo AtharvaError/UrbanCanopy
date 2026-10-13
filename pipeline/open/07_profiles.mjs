@@ -4,7 +4,8 @@
  *
  * One pass over what stages 09, 10, 11, 12 and 15 of the Python pipeline do:
  *
- *   cells_ndvi_change.geojson   green cover gained, stable or lost per cell
+ *   cells_ndvi_change.geojson   green cover gained, stable or lost per cell, and
+ *                               whether its surface warmed more or less than the city
  *   ward_profiles.json          each area against the city, with neighbours
  *   hero_city.json              the areas as a small 3D-ready model
  *   hero_region.json            the land around the city, for the same model
@@ -15,6 +16,7 @@
  * Run: node 07_profiles.mjs --city nagpur
  */
 
+import { existsSync } from "node:fs";
 import { join } from "node:path";
 import { ROOT, cityFromArgv } from "./lib/city.mjs";
 import {
@@ -38,11 +40,40 @@ import { mean, populationStd, zscores } from "./lib/stats.mjs";
 const GAIN_THRESHOLD = 0.05;
 const LOSS_THRESHOLD = -0.05;
 
+/**
+ * A cell counts as warming faster or slower than the city only beyond this
+ * many degrees either side of the city-wide change. Set by this project.
+ */
+const HEAT_CHANGE_THRESHOLD_C = 1;
+
+/** A cell's surface-temperature change between the two seasons, or null when either is missing. */
+function lstDelta(p) {
+  const known = typeof p.LST_C === "number" && typeof p.LST_C_prev === "number";
+  return known ? p.LST_C - p.LST_C_prev : null;
+}
+
+/**
+ * The city-wide mean change in surface temperature between the two seasons.
+ *
+ * Two hot seasons nine years apart differ mostly because one year's weather was
+ * hotter than the other's, which says nothing about any one place. So the
+ * change layer never shows a cell's raw change: it shows the change against
+ * this figure, which cancels the weather and leaves where the city warmed
+ * faster or slower than itself.
+ */
+function cityLstChange(cells) {
+  const deltas = cells.features.map((f) => lstDelta(f.properties)).filter((d) => d !== null);
+  return deltas.length ? mean(deltas) : null;
+}
+
 function ndviChange(cells) {
+  const cityHeatChange = cityLstChange(cells);
   const features = cells.features.map((f) => {
     const p = f.properties;
     const known = p.NDVI !== null && p.NDVI !== undefined && p.NDVI_prev !== null && p.NDVI_prev !== undefined;
     const delta = known ? p.NDVI - p.NDVI_prev : null;
+    const heatDelta = lstDelta(p);
+    const heatVsCity = heatDelta === null || cityHeatChange === null ? null : heatDelta - cityHeatChange;
     return {
       type: "Feature",
       properties: {
@@ -52,6 +83,17 @@ function ndviChange(cells) {
         NDVI_prev: p.NDVI_prev ?? null,
         ndvi_delta: delta,
         change_class: !known ? "unknown" : delta > GAIN_THRESHOLD ? "gained" : delta < LOSS_THRESHOLD ? "lost" : "stable",
+        LST_C: p.LST_C ?? null,
+        LST_C_prev: p.LST_C_prev ?? null,
+        lst_delta_vs_city: heatVsCity,
+        heat_change_class:
+          heatVsCity === null
+            ? "unknown"
+            : heatVsCity > HEAT_CHANGE_THRESHOLD_C
+              ? "faster"
+              : heatVsCity < -HEAT_CHANGE_THRESHOLD_C
+                ? "slower"
+                : "in_line",
         HVI: p.HVI,
       },
       geometry: f.geometry,
@@ -71,10 +113,21 @@ const UNITS = {
   impervious_pct: "percent (0-100)",
 };
 
+/** Mean of the numbers in a list, ignoring anything that is not one. Null when none are. */
+function meanOfKnown(values) {
+  const known = values.filter((v) => typeof v === "number");
+  return known.length ? mean(known) : null;
+}
+
 function wardProfiles(cells, wards, boundariesUtm, indicators, weights) {
   const rows = cells.features.map((f) => f.properties);
   const city = { hvi_mean: mean(rows.map((r) => r.HVI)) };
   for (const c of indicators) city[c] = mean(rows.map((r) => r[c]));
+  // Context the score does not use: measured tree cover, and how much the
+  // surface warmed between the two seasons. The second is only ever read
+  // against the city's own figure (see cityLstChange).
+  city.tree_pct = meanOfKnown(rows.map((r) => r.tree_pct));
+  city.lst_change_c = cityLstChange(cells);
 
   // What turns a contribution into score points. A cell's score is its summed
   // contributions rescaled to 0-100 between the lowest and highest cell, so a
@@ -129,6 +182,9 @@ function wardProfiles(cells, wards, boundariesUtm, indicators, weights) {
       entry[c] = mean(members.map((m) => m[c]));
       entry[`${c}_delta_city`] = entry[c] - city[c];
     }
+    entry.tree_pct = meanOfKnown(members.map((m) => m.tree_pct));
+    const warming = meanOfKnown(members.map(lstDelta));
+    entry.lst_change_vs_city_c = warming === null || city.lst_change_c === null ? null : warming - city.lst_change_c;
     // Biggest upward driver: the most positive contribution.
     const top = indicators.reduce((best, c) => (w[`contrib_${c}`] > w[`contrib_${best}`] ? c : best), indicators[0]);
     entry.top_driver = top;
@@ -464,11 +520,25 @@ function main() {
   const change = ndviChange(cells);
   writeJson(join(city.dataDir, "cells_ndvi_change.geojson"), change);
   const counts = {};
-  for (const f of change.features) counts[f.properties.change_class] = (counts[f.properties.change_class] ?? 0) + 1;
+  const heatCounts = {};
+  for (const f of change.features) {
+    counts[f.properties.change_class] = (counts[f.properties.change_class] ?? 0) + 1;
+    heatCounts[f.properties.heat_change_class] = (heatCounts[f.properties.heat_change_class] ?? 0) + 1;
+  }
   console.log(`[ok] green-cover change: ${JSON.stringify(counts)}`);
+  const cityHeat = cityLstChange(cells);
+  console.log(
+    `[ok] surface-heat change against the city's own (${cityHeat === null ? "unknown" : cityHeat.toFixed(2) + " C"}): ${JSON.stringify(heatCounts)}`,
+  );
 
   const weights = readJson(join(city.dataDir, "hvi_pca_log.json")).weights;
   const profiles = wardProfiles(cells, wards, boundariesUtm, indicators, weights);
+  // The two seasons the change layers compare, so the site can name the years.
+  const provenancePath = join(city.dataDir, "provenance_satellite.json");
+  if (existsSync(provenancePath)) {
+    const provenance = readJson(provenancePath);
+    profiles.change_windows = { previous: provenance.previous_window, current: provenance.composite_window };
+  }
   writeJson(join(city.dataDir, "ward_profiles.json"), profiles, 2);
   console.log(`[ok] wrote ${profiles.wards.length} area profiles`);
   const types = profiles.locality_types;

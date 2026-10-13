@@ -2,6 +2,7 @@ import Link from "next/link";
 import HeroCity from "../HeroCity";
 import HeroGradient from "../HeroGradient";
 import LiveTempStrip from "../LiveTempStrip";
+import T from "../T";
 
 /**
  * Stacked hero: copy on top, subject underneath.
@@ -19,7 +20,7 @@ import LiveTempStrip from "../LiveTempStrip";
  * section, which grounds the model in light and leaves the headline on a clean,
  * high-contrast surface.
  */
-export default function Hero() {
+export default function Hero({ localities }: { localities: number }) {
   return (
     // Sized to the viewport minus the header, with the city taking whatever the
     // copy does not, so the whole composition is visible without scrolling and
@@ -36,30 +37,30 @@ export default function Hero() {
             there is no side column to align against; left-aligned from md up,
             where the model moves right and the copy holds the left. */}
         <div className="max-w-3xl animate-fade-up text-center md:text-left">
-          <p className="hero-text-shadow kicker !text-foreground">UrbanCanopy · urban heat intelligence</p>
+          <p className="hero-text-shadow kicker !text-foreground">
+            <T k="hero.kicker" />
+          </p>
           <h1 className="hero-text-shadow mt-4 text-3xl font-bold leading-[1.1] tracking-tight text-foreground sm:text-4xl md:text-5xl">
-            Nagpur&apos;s heat vulnerability,
+            <T k="hero.title1" />
             <br />
-            locality by locality.
+            <T k="hero.title2" />
           </h1>
           <div className="mx-auto mt-6 h-1.5 w-44 rounded-full bg-gradient-to-r from-brand-teal to-brand-emerald md:mx-0" />
           <p className="hero-text-shadow mx-auto mt-6 max-w-xl text-lg leading-relaxed text-foreground md:mx-0">
-            Satellite and population data, scored on a 500 m grid.
-            <br />
-            Every number sourced.
+            <T k="hero.sub" vars={{ n: localities }} />
           </p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3 md:justify-start">
             <Link
               href="/dashboard"
               className="rounded-lg bg-brand-teal px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-teal-hover"
             >
-              Open the dashboard
+              <T k="hero.cta.map" />
             </Link>
             <Link
               href="/simulate"
               className="rounded-lg border border-border bg-surface/60 px-5 py-2.5 text-sm font-semibold text-foreground backdrop-blur-sm transition-colors hover:bg-surface-hover"
             >
-              Try the simulator
+              <T k="hero.cta.sim" />
             </Link>
           </div>
           <div className="mt-6 flex justify-center md:block">
@@ -76,8 +77,7 @@ export default function Hero() {
           something larger, and gives the credit line a surface to sit on. */}
       <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-24 bg-gradient-to-t from-background to-transparent" />
       <p className="pointer-events-none absolute inset-x-0 bottom-3 z-10 mx-auto max-w-6xl px-6 text-center text-[11px] leading-relaxed text-muted-foreground sm:px-8 md:text-left">
-        Nagpur&apos;s localities, raised and coloured by heat vulnerability.
-        <br className="hidden sm:inline" /> Approximate localities inside the real municipal outline.
+        <T k="hero.credit" />
       </p>
     </section>
   );

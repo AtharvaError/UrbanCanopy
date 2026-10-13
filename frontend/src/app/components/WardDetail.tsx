@@ -136,7 +136,7 @@ export default function WardDetail({
 
     try {
       const response = await fetch(
-        "http://localhost:3001/api/heat-explain",
+        "/api/heat-explain",
         {
           method: "POST",
           headers: {

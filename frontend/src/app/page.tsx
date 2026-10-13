@@ -1,12 +1,24 @@
 import fs from "fs";
 import path from "path";
 import Link from "next/link";
+import { ArrowRight, Calculator, Map as MapIcon, SlidersHorizontal } from "lucide-react";
 import SiteHeader from "./components/SiteHeader";
 import SiteFooter from "./components/SiteFooter";
 import Reveal from "./components/Reveal";
+import T from "./components/T";
 import Hero from "./components/sections/Hero";
 import MapPreview from "./components/sections/MapPreview";
 import CitationStrip from "./components/sections/CitationStrip";
+import { hviColor } from "@/lib/hvi";
+import type { StringKey } from "@/lib/i18n";
+import { priorityFor } from "@/lib/zonePlanner";
+
+/**
+ * The landing page. One job: say what the tool is in ten seconds and send the
+ * reader to the map. Top to bottom it follows the order a visitor asks things
+ * in: what is this, what does it say, how does it know, what can I do with it,
+ * and can I trust it.
+ */
 
 type WardFeature = {
   properties: {
@@ -16,43 +28,76 @@ type WardFeature = {
   };
 };
 
-function topWards(n: number) {
+function rankedWards() {
   const p = path.join(process.cwd(), "public", "wards_hvi.geojson");
   const gj = JSON.parse(fs.readFileSync(p, "utf-8")) as { features: WardFeature[] };
   return gj.features
     .map((f) => f.properties)
-    .filter((w) => w.rank !== null)
-    .sort((a, b) => (a.rank ?? 99) - (b.rank ?? 99))
-    .slice(0, n);
+    .filter((w): w is WardFeature["properties"] & { HVI: number; rank: number } => w.rank !== null && w.HVI !== null)
+    .sort((a, b) => a.rank - b.rank);
 }
 
-const LAYERS = [
-  {
-    color: "#f03b20",
-    name: "Heat vulnerability",
-    text: "Every locality gets a score from 0 to 100 combining surface heat, green cover, how built-up it is, crowding, and distance to hospitals. Darker red means help is needed sooner.",
-  },
-  {
-    color: "#4ade80",
-    name: "Plantability",
-    text: "Not every hot spot should get trees. This layer shows where planting makes ecological sense and where reflective cool roofs are the better fix.",
-  },
-  {
-    color: "#d4d4d8",
-    name: "Green-cover change",
-    text: "Satellite comparison across about nine years, hot season to hot season, showing where the city has gained or lost vegetation.",
-  },
+const STEPS: { title: StringKey; text: StringKey }[] = [
+  { title: "how.1.title", text: "how.1.text" },
+  { title: "how.2.title", text: "how.2.text" },
+  { title: "how.3.title", text: "how.3.text" },
+];
+
+const CARDS: { href: string; icon: typeof MapIcon; title: StringKey; text: StringKey }[] = [
+  { href: "/dashboard", icon: MapIcon, title: "cards.map.title", text: "cards.map.text" },
+  { href: "/calculator", icon: Calculator, title: "cards.calc.title", text: "cards.calc.text" },
+  { href: "/simulate", icon: SlidersHorizontal, title: "cards.sim.title", text: "cards.sim.text" },
 ];
 
 export default function Home() {
-  const wards = topWards(5);
+  const ranked = rankedWards();
+  const top = ranked.slice(0, 5);
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <SiteHeader />
 
       <main className="flex-1">
-        <Hero />
+        <Hero localities={ranked.length} />
+
+        <Reveal>
+          <section className="border-b border-border bg-surface">
+            <div className="mx-auto max-w-5xl px-6 py-14">
+              <h2 className="text-xl font-semibold text-foreground">
+                <T k="top.title" />
+              </h2>
+              <p className="mt-1 text-sm text-muted-foreground">
+                <T k="top.sub" />
+              </p>
+              <ol className="mt-6 divide-y divide-border">
+                {top.map((w) => (
+                  <li key={w.ward_id}>
+                    <Link
+                      href={`/dashboard?ward=${encodeURIComponent(w.ward_id)}`}
+                      className="flex items-center justify-between gap-4 py-3 hover:bg-surface-hover"
+                    >
+                      <span className="flex items-baseline gap-3">
+                        <span className="w-6 text-right font-mono text-sm text-muted-foreground">{w.rank}</span>
+                        <span className="font-medium text-foreground">{w.ward_id}</span>
+                      </span>
+                      <span className="flex items-center gap-3 text-sm text-muted-foreground">
+                        <span className="flex items-center gap-1.5">
+                          <span className="h-2.5 w-2.5 rounded-sm" style={{ background: hviColor(w.HVI) }} aria-hidden />
+                          <T k={`band.${priorityFor(w.HVI)}`} />
+                        </span>
+                        <span className="font-mono text-foreground">{w.HVI.toFixed(1)}</span>
+                      </span>
+                    </Link>
+                  </li>
+                ))}
+              </ol>
+              <Link href="/dashboard" className="mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-brand-teal hover:underline">
+                <T k="top.link" />
+                <ArrowRight className="h-4 w-4" aria-hidden />
+              </Link>
+            </div>
+          </section>
+        </Reveal>
 
         <Reveal>
           <MapPreview />
@@ -60,57 +105,52 @@ export default function Home() {
 
         <Reveal>
           <section className="mx-auto max-w-5xl px-6 py-14">
-            <h2 className="text-xl font-semibold text-foreground">Three ways to look at the city</h2>
-            <div className="mt-6 space-y-6">
-              {LAYERS.map((l) => (
-                <div key={l.name} className="flex items-start gap-4">
-                  <span
-                    className="mt-1 h-4 w-4 shrink-0 rounded-sm"
-                    style={{ background: l.color }}
-                    aria-hidden
-                  />
-                  <div>
-                    <h3 className="font-medium text-foreground">{l.name}</h3>
-                    <p className="mt-1 max-w-2xl text-sm leading-relaxed text-muted-foreground">
-                      {l.text}
-                    </p>
-                  </div>
-                </div>
+            <h2 className="text-xl font-semibold text-foreground">
+              <T k="how.title" />
+            </h2>
+            <ol className="mt-6 grid gap-6 md:grid-cols-3">
+              {STEPS.map((step, i) => (
+                <li key={step.title} className="rounded-xl border border-border bg-surface p-5">
+                  <p className="font-mono text-sm text-brand-teal">{String(i + 1).padStart(2, "0")}</p>
+                  <h3 className="mt-2 font-semibold text-foreground">
+                    <T k={step.title} />
+                  </h3>
+                  <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
+                    <T k={step.text} />
+                  </p>
+                </li>
               ))}
-            </div>
+            </ol>
           </section>
         </Reveal>
 
         <Reveal>
-          <section className="border-t border-border bg-surface">
+          <section className="border-y border-border bg-surface">
             <div className="mx-auto max-w-5xl px-6 py-14">
               <h2 className="text-xl font-semibold text-foreground">
-                The five localities that need cooling most
+                <T k="cards.title" />
               </h2>
-              <p className="mt-1 text-sm text-muted-foreground">
-                Computed from the latest satellite pass, not hand-picked.
-              </p>
-              <ol className="mt-6 divide-y divide-border">
-                {wards.map((w) => (
-                  <li key={w.ward_id} className="flex items-baseline justify-between py-3">
-                    <span className="flex items-baseline gap-3">
-                      <span className="w-6 text-right font-mono text-sm text-muted-foreground">
-                        {w.rank}
-                      </span>
-                      <span className="font-medium text-foreground">{w.ward_id}</span>
+              <div className="mt-6 grid gap-6 md:grid-cols-3">
+                {CARDS.map((card) => (
+                  <Link
+                    key={card.href}
+                    href={card.href}
+                    className="group flex flex-col rounded-xl border border-border bg-background p-5 transition-colors hover:border-brand-teal"
+                  >
+                    <card.icon className="h-5 w-5 text-brand-teal" aria-hidden />
+                    <h3 className="mt-3 font-semibold text-foreground">
+                      <T k={card.title} />
+                    </h3>
+                    <p className="mt-1.5 flex-1 text-sm leading-relaxed text-muted-foreground">
+                      <T k={card.text} />
+                    </p>
+                    <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-brand-teal">
+                      <T k="cards.open" />
+                      <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" aria-hidden />
                     </span>
-                    <span className="font-mono text-sm text-muted-foreground">
-                      HVI {w.HVI?.toFixed(1)}
-                    </span>
-                  </li>
+                  </Link>
                 ))}
-              </ol>
-              <Link
-                href="/dashboard"
-                className="mt-6 inline-block text-sm font-medium text-brand-teal hover:underline"
-              >
-                See every locality on the map
-              </Link>
+              </div>
             </div>
           </section>
         </Reveal>
@@ -121,13 +161,16 @@ export default function Home() {
 
         <Reveal>
           <section className="mx-auto max-w-5xl px-6 py-14">
-            <h2 className="text-xl font-semibold text-foreground">Built in the open</h2>
+            <h2 className="text-xl font-semibold text-foreground">
+              <T k="open.title" />
+            </h2>
             <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted-foreground">
-              All data sources are free and public: Landsat satellite imagery, WorldPop population
-              rasters, ESA WorldCover land cover, and OpenStreetMap. The parts that are proxies or
-              estimates are labelled where they appear. This is a research prototype, not an
-              official Nagpur Municipal Corporation tool.
+              <T k="open.text" />
             </p>
+            <Link href="/data" className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-brand-teal hover:underline">
+              <T k="open.link" />
+              <ArrowRight className="h-4 w-4" aria-hidden />
+            </Link>
           </section>
         </Reveal>
       </main>

@@ -2,13 +2,15 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { ArrowRight, ChevronLeft, ChevronRight, Loader2, Sparkles, Sun, TreePine, Trees, X } from "lucide-react";
+import { ArrowRight, ChevronLeft, ChevronRight, FileText, Loader2, Sparkles, Sun, TreePine, Trees, X } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ACTIVE_CITY } from "@/lib/city";
 import { CANOPY_THRESHOLD_PCT, MAX_REALISTIC_CANOPY_PCT, MAX_REALISTIC_PARK_PCT } from "@/lib/coefficients";
 import { SCENARIO_PRESETS, matchingPresetId, runScenario, type ScenarioCell, type ScenarioInputs } from "@/lib/scenario";
 import { scenarioCellsFrom } from "@/lib/scenarioData";
 import { typeColor, typeOf } from "@/lib/localityTypes";
+import { hasString } from "@/lib/i18n";
+import { useLanguage } from "@/lib/useLanguage";
 import { useWardData } from "@/lib/useWardData";
 import { ordinal } from "@/lib/wardProfile";
 import type { NbsRec } from "@/lib/wardTypes";
@@ -77,10 +79,11 @@ function useScenarioCells(): CellData | null {
 
 function PriorityBadge({ level }: { level: PriorityLevel }) {
   const style = PRIORITY_STYLE[level];
+  const { t } = useLanguage();
   return (
     <span className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-foreground ${style.chip}`}>
       <span className={`h-2 w-2 rounded-full ${style.dot}`} aria-hidden />
-      {level} priority
+      {t("planner.priority", { level: t(`band.${level}`) })}
     </span>
   );
 }
@@ -228,6 +231,8 @@ type Outcome = {
   coolingC: number;
   cells: number;
   plantableCells: number;
+  /** Measured tree cover across the locality today, 0 to 100. */
+  treePct: number;
 };
 
 function WhatIfTab({
@@ -285,7 +290,7 @@ function WhatIfTab({
           max={MAX_REALISTIC_CANOPY_PCT}
           step={1}
           display={`${inputs.canopyPct}% cover`}
-          note={`Only in plantable cells: ${outcome?.plantableCells ?? 0} of ${outcome?.cells ?? 0} here. No cooling below ~${CANOPY_THRESHOLD_PCT}% canopy (Ziter et al. 2019).`}
+          note={`A target, counted from the tree cover measured today: ${Math.round(outcome?.treePct ?? 0)}% across this locality. Only in plantable cells: ${outcome?.plantableCells ?? 0} of ${outcome?.cells ?? 0} here. No cooling below ~${CANOPY_THRESHOLD_PCT}% canopy (Ziter et al. 2019).`}
           onChange={(canopyPct) => onChange({ ...inputs, canopyPct })}
         />
         <Slider
@@ -355,6 +360,12 @@ function ActionsTab({
   outcome: Outcome | null;
   scenarioActive: boolean;
 }) {
+  const { t } = useLanguage();
+  /** A people-focused action in the reader's language, or as written when it has no translation. */
+  const actionText = (item: PeopleAction, part: "title" | "text") => {
+    const key = `action.${item.id}.${part}`;
+    return hasString(key) ? t(key) : part === "title" ? item.title : item.action;
+  };
   return (
     <div>
       {scenarioActive && outcome && (
@@ -366,13 +377,13 @@ function ActionsTab({
         </div>
       )}
 
-      <p className="kicker">For people, this hot season</p>
+      <p className="kicker">{t("actions.people")}</p>
       {people.length > 0 ? (
         <ul className="mt-3 space-y-3">
           {people.map((item) => (
             <li key={item.id} className="rounded-lg border border-border bg-surface p-3">
-              <p className="text-sm font-medium text-foreground">{item.title}</p>
-              <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{item.action}</p>
+              <p className="text-sm font-medium text-foreground">{actionText(item, "title")}</p>
+              <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{actionText(item, "text")}</p>
               <p className="mt-1.5 font-mono text-[11px] leading-relaxed text-muted-foreground">{item.because}</p>
             </li>
           ))}
@@ -466,6 +477,7 @@ function PlannerBody({
   onCompareCityChange: (compare: boolean) => void;
 }) {
   const { wards, recs, profiles, error } = useWardData();
+  const { lang, t } = useLanguage();
   const [inputs, setInputs] = useState<ScenarioInputs>(NO_CHANGE);
   const [aiState, setAiState] = useState<{
     wardId: string;
@@ -500,6 +512,7 @@ function PlannerBody({
       coolingC: ward.meanCoolingC,
       cells: ward.cells,
       plantableCells: ward.plantableCells,
+      treePct: ward.treePct,
     };
   }, [cellData, wardId, inputs]);
 
@@ -566,7 +579,7 @@ function PlannerBody({
     setAiState({ wardId, explanation: "", error: "" });
 
     try {
-      const response = await fetch("http://localhost:3001/api/heat-explain", {
+      const response = await fetch("/api/heat-explain", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -577,6 +590,8 @@ function PlannerBody({
           rank: locality.rank,
           factors: locality.factors,
           recommendation: locality.recommendation,
+          // The explanation is written in the language the reader has chosen.
+          language: lang,
         }),
       });
 
@@ -671,7 +686,7 @@ function PlannerBody({
           <p className="mt-2 flex items-start gap-2 text-xs leading-relaxed text-muted-foreground">
             <span className="mt-1 h-2.5 w-2.5 shrink-0 rounded-sm" style={{ backgroundColor: typeColor(type.id) }} aria-hidden />
             <span>
-              <Link href="/calculator#locality-types" className="font-medium text-foreground underline-offset-2 hover:underline">
+              <Link href="/data#locality-types" className="font-medium text-foreground underline-offset-2 hover:underline">
                 {type.name}
               </Link>
               , one of {profiles?.locality_types?.k} kinds of locality. {type.description}
@@ -685,7 +700,7 @@ function PlannerBody({
               {score.toFixed(1)}
               <span className="text-base font-normal text-muted-foreground"> / 100</span>
             </p>
-            <p className="mt-1.5 text-[11px] uppercase tracking-wide text-muted-foreground">Intervention priority score</p>
+            <p className="mt-1.5 text-[11px] uppercase tracking-wide text-muted-foreground">{t("planner.score")}</p>
           </div>
           <div className="pb-0.5 text-xs leading-relaxed text-muted-foreground">
             <p>
@@ -715,8 +730,17 @@ function PlannerBody({
               onChange={(e) => onCompareCityChange(e.target.checked)}
               className="h-3.5 w-3.5 accent-brand-teal"
             />
-            Compare with city average
+            {t("planner.compare")}
           </label>
+          <a
+            href={`/brief/${encodeURIComponent(props.ward_id)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="ml-auto inline-flex items-center gap-1.5 rounded-md border border-border bg-surface px-2.5 py-1 text-xs font-medium text-foreground hover:bg-surface-hover"
+          >
+            <FileText className="h-3.5 w-3.5" aria-hidden />
+            {t("planner.brief")}
+          </a>
           <button
             type="button"
             onClick={() => {
@@ -727,7 +751,7 @@ function PlannerBody({
             className="inline-flex items-center gap-1.5 rounded-md bg-emerald-600 px-2.5 py-1 text-xs font-medium text-white shadow-xs transition hover:bg-emerald-500 disabled:opacity-50"
           >
             <Sparkles className="h-3.5 w-3.5" />
-            {aiLoading ? "Analysing..." : "Explain with AI"}
+            {aiLoading ? t("planner.analysing") : t("planner.explain")}
           </button>
         </div>
       </header>
@@ -735,13 +759,13 @@ function PlannerBody({
       <Tabs value={tab} onValueChange={onTabChange} className="flex min-h-0 flex-1 flex-col gap-0">
         <div className="border-b border-border px-5 py-2.5">
           <TabsList>
-            <TabsTrigger value="why">Why this zone?</TabsTrigger>
+            <TabsTrigger value="why">{t("planner.tab.why")}</TabsTrigger>
             <TabsTrigger value="ai" className="gap-1.5">
-              AI Explainer
+              {t("planner.tab.ai")}
               <span className="rounded-full bg-emerald-500/20 px-1.5 py-0.2 text-[10px] font-semibold text-emerald-400">AI</span>
             </TabsTrigger>
-            <TabsTrigger value="whatif">What if?</TabsTrigger>
-            <TabsTrigger value="actions">Actions</TabsTrigger>
+            <TabsTrigger value="whatif">{t("planner.tab.whatif")}</TabsTrigger>
+            <TabsTrigger value="actions">{t("planner.tab.actions")}</TabsTrigger>
           </TabsList>
         </div>
         <div className="ward-scroll min-h-0 flex-1 overflow-y-auto px-5 py-5">

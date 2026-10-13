@@ -3,12 +3,13 @@
 import { useEffect, useState } from "react";
 import { Flame, Info, ShieldCheck, TriangleAlert, type LucideIcon } from "lucide-react";
 import { ACTIVE_CITY } from "@/lib/city";
+import { LOCALES, type Lang } from "@/lib/i18n";
+import { useLanguage } from "@/lib/useLanguage";
 import { useWardData } from "@/lib/useWardData";
 import { useWeather } from "@/lib/useWeather";
 import {
   dayLabel,
   fetchForecastHighs,
-  HEAT_ALERT_LABELS,
   HEAT_ALERT_THRESHOLDS_C,
   heatAlertFor,
   heatOutlook,
@@ -31,8 +32,24 @@ const LEVEL_STYLE: Record<HeatAlertLevel, { icon: LucideIcon; pill: string; icon
   severe: { icon: Flame, pill: "border-red-600/60 bg-red-600/15", iconColor: "text-red-700 dark:text-red-400" },
 };
 
-/** "today", "tomorrow" or "on Thursday", to finish a sentence. */
-function whenPhrase(date: string, today: string): string {
+type Translate = ReturnType<typeof useLanguage>["t"];
+
+/**
+ * A forecast day named in the reader's language. `dayLabel` decides whether it
+ * is today, tomorrow or a weekday; this only puts the words in.
+ */
+function localDay(date: string, today: string, lang: Lang, t: Translate, width: "long" | "short" = "long"): string {
+  const label = dayLabel(date, today, width);
+  if (label === "Today") return t("day.today");
+  if (label === "Tomorrow") return t("day.tomorrow");
+  if (lang === "en") return label;
+  return new Intl.DateTimeFormat(LOCALES[lang], { weekday: width, timeZone: "UTC" }).format(new Date(`${date}T00:00:00Z`));
+}
+
+/** The day as it closes a sentence. English needs "on" before a weekday and lower case otherwise. */
+function whenPhrase(date: string, today: string, lang: Lang, t: Translate): string {
+  const day = localDay(date, today, lang, t);
+  if (lang !== "en") return day;
   const label = dayLabel(date, today);
   return label === "Today" || label === "Tomorrow" ? label.toLowerCase() : `on ${label}`;
 }
@@ -57,6 +74,7 @@ export default function HeatOutlookBar({ onSelectWard }: { onSelectWard: (wardId
   const [forecastStatus, setForecastStatus] = useState<"loading" | "ok" | "unavailable">("loading");
   const [showRule, setShowRule] = useState(false);
   const { wards } = useWardData();
+  const { lang, t } = useLanguage();
 
   useEffect(() => {
     let cancelled = false;
@@ -77,8 +95,8 @@ export default function HeatOutlookBar({ onSelectWard }: { onSelectWard: (wardId
     return (
       <div className="border-b border-border bg-background px-6 py-2 text-xs text-muted-foreground" role="status">
         {nowLoading || forecastStatus === "loading"
-          ? `Checking ${ACTIVE_CITY.name}'s weather…`
-          : "Live weather is unavailable right now."}
+          ? t("live.checking", { city: ACTIVE_CITY.name })
+          : t("live.unavailable")}
       </div>
     );
   }
@@ -106,14 +124,15 @@ export default function HeatOutlookBar({ onSelectWard }: { onSelectWard: (wardId
               }`}
             />
           </span>
-          <span className="font-medium uppercase tracking-wide text-muted-foreground">Live</span>
+          <span className="font-medium uppercase tracking-wide text-muted-foreground">{t("outlook.live")}</span>
           {weather ? (
             <>
               <span>
-                {ACTIVE_CITY.name} now <span className="font-mono text-sm font-semibold">{tempFormatted}</span> air
+                {t("live.now", { city: ACTIVE_CITY.name })} <span className="font-mono text-sm font-semibold">{tempFormatted}</span>{" "}
+                {t("live.air")}
               </span>
               <span className="text-muted-foreground">
-                feels like <span className="font-mono text-foreground">{feelsLikeFormatted}</span>
+                {t("live.feels")} <span className="font-mono text-foreground">{feelsLikeFormatted}</span>
               </span>
               {isStale && lastUpdatedFormatted && (
                 <span className="text-muted-foreground">last updated {lastUpdatedFormatted}</span>
@@ -121,7 +140,7 @@ export default function HeatOutlookBar({ onSelectWard }: { onSelectWard: (wardId
             </>
           ) : (
             <span className="text-muted-foreground">
-              {nowLoading ? "Checking the temperature now…" : "Temperature now is unavailable"}
+              {nowLoading ? t("live.checking", { city: ACTIVE_CITY.name }) : t("outlook.nowUnavailable")}
             </span>
           )}
         </p>
@@ -133,7 +152,7 @@ export default function HeatOutlookBar({ onSelectWard }: { onSelectWard: (wardId
                 const hot = heatAlertFor(day.maxC) !== "none";
                 return (
                   <li key={day.date} className="flex items-baseline gap-1 text-muted-foreground">
-                    <span>{dayLabel(day.date, days[0].date, "short")}</span>
+                    <span>{localDay(day.date, days[0].date, lang, t, "short")}</span>
                     <span
                       className={`font-mono text-foreground ${hot ? "font-semibold underline decoration-2 underline-offset-2" : ""}`}
                     >
@@ -158,7 +177,7 @@ export default function HeatOutlookBar({ onSelectWard }: { onSelectWard: (wardId
           className="ml-auto inline-flex shrink-0 items-center gap-1 rounded px-1.5 py-0.5 text-muted-foreground hover:bg-surface-hover hover:text-foreground"
         >
           <Info className="h-3.5 w-3.5" aria-hidden />
-          How is this decided?
+          {t("outlook.how")}
         </button>
       </div>
 
@@ -193,26 +212,26 @@ function OutlookStatement({
   const lastDay = days[days.length - 1];
   const style = LEVEL_STYLE[outlook.level];
   const LevelIcon = style.icon;
+  const { lang, t } = useLanguage();
 
   return (
     <p className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 text-foreground" role="status">
       <span className={`inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 font-medium ${style.pill}`}>
         <LevelIcon className={`h-3.5 w-3.5 shrink-0 ${style.iconColor}`} aria-hidden />
-        {HEAT_ALERT_LABELS[outlook.level]}
+        {t(`outlook.${outlook.level}`)}
       </span>
       {outlook.level === "none" ? (
         <span className="text-muted-foreground">
-          Highs stay below {HEAT_ALERT_THRESHOLDS_C.watch}°C through {dayLabel(lastDay.date, today)}.
+          {t("outlook.below", { t: HEAT_ALERT_THRESHOLDS_C.watch, day: localDay(lastDay.date, today, lang, t) })}
         </span>
       ) : (
         <>
-          <span>
-            A high of <span className="font-mono font-semibold">{outlook.peak.maxC.toFixed(1)}°C</span> is forecast{" "}
-            {whenPhrase(outlook.peak.date, today)}.
+          <span className="font-medium">
+            {t("outlook.high", { t: outlook.peak.maxC.toFixed(1), day: whenPhrase(outlook.peak.date, today, lang, t) })}
           </span>
           {actFirst.length > 0 && (
             <span className="flex flex-wrap items-center gap-1.5">
-              <span className="text-muted-foreground">Act first in</span>
+              <span className="text-muted-foreground">{t("outlook.actfirst")}</span>
               {actFirst.map((wardId) => (
                 <button
                   key={wardId}

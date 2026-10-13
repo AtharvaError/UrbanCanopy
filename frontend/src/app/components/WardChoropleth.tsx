@@ -2,9 +2,9 @@
 
 import "leaflet/dist/leaflet.css";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { GeoJSON, MapContainer, Pane, TileLayer, useMap } from "react-leaflet";
-import { geoJSON as leafletGeoJSON } from "leaflet";
-import type { Feature, FeatureCollection, Geometry } from "geojson";
+import { GeoJSON, MapContainer, Marker, Pane, TileLayer, Tooltip, useMap } from "react-leaflet";
+import { divIcon, geoJSON as leafletGeoJSON } from "leaflet";
+import type { Feature, FeatureCollection, Geometry, Point } from "geojson";
 import type { GeoJSON as LeafletGeoJSONLayer, Layer, Path, PathOptions } from "leaflet";
 import { Loader2, LocateFixed, Maximize2, Minimize2 } from "lucide-react";
 import { useTheme } from "next-themes";
@@ -15,9 +15,10 @@ import { boundsOf } from "@/lib/geometry";
 import { ACTIVE_CITY } from "@/lib/city";
 import { hviColor as colorForHvi } from "@/lib/hvi";
 import type { MapLayer, MapView } from "@/lib/mapState";
-import type { CellNbsProps, CellNdviProps, WardProps } from "@/lib/wardTypes";
+import type { CellNbsProps, CellNdviProps, PlaceKind, PlaceProps, WardProps } from "@/lib/wardTypes";
 import { WARD_PROFILES_URL, ordinal, type WardProfileData } from "@/lib/wardProfile";
 import { hoverSummary } from "@/lib/zonePlanner";
+import { useLanguage } from "@/lib/useLanguage";
 
 type LayerId = MapLayer;
 
@@ -90,6 +91,54 @@ function styleNdviChange(selectedWardId: string | null) {
     };
   };
 }
+
+/**
+ * Warming against the city: two hues either side of a neutral grey, so "in
+ * line with the city" reads as no colour at all. Red for faster and blue for
+ * slower follows what a reader expects of temperature.
+ */
+const HEAT_CHANGE_COLORS: Record<string, string> = {
+  faster: "#d6604d",
+  in_line: "#d4d4d8",
+  slower: "#4393c3",
+  unknown: "#e5e5e5",
+};
+
+function styleHeatChange(selectedWardId: string | null) {
+  return (feature?: Feature<Geometry, CellNdviProps>): PathOptions => {
+    const cls = feature?.properties?.heat_change_class ?? "unknown";
+    return {
+      fillColor: HEAT_CHANGE_COLORS[cls] ?? "#e5e5e5",
+      fillOpacity: 0.7,
+      color: "#333333",
+      weight: 0.5,
+      ...selectionStyle(feature?.properties?.ward_id ?? "", selectedWardId),
+    };
+  };
+}
+
+/**
+ * The kinds of place the planner's actions name. Each is told apart by its
+ * letter, not its colour: the pins sit on a map that is already coloured, and
+ * no pin colour stays readable on every shade under it.
+ */
+const PLACE_KINDS: { kind: PlaceKind; letter: string; label: string; one: string }[] = [
+  { kind: "hospital", letter: "H", label: "Hospitals", one: "Hospital" },
+  { kind: "school", letter: "S", label: "Schools", one: "School" },
+  { kind: "bus_stop", letter: "B", label: "Bus stops", one: "Bus stop" },
+  { kind: "market", letter: "M", label: "Markets", one: "Market" },
+];
+
+const PLACES_URL = "/places.geojson";
+/** Above the data polygons, below the basemap labels. */
+const PLACE_PANE_Z = 440;
+
+const PLACE_ICONS = Object.fromEntries(
+  PLACE_KINDS.map(({ kind, letter }) => [
+    kind,
+    divIcon({ className: "", html: `<span class="place-pin">${letter}</span>`, iconSize: [18, 18], iconAnchor: [9, 9] }),
+  ]),
+) as Record<PlaceKind, ReturnType<typeof divIcon>>;
 
 /** A Mapbox public token. Public by design: it ships to the browser, and is restricted by URL on Mapbox's side, not by secrecy. */
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
@@ -247,6 +296,13 @@ const LAYER_META: Record<LayerId, { label: string; url: string; caption: string 
     url: "/cells_ndvi_change.geojson",
     caption: "Where vegetation has grown or been lost over about nine years, hot season to hot season.",
   },
+  heat_change: {
+    label: "Getting hotter",
+    // The same file as the green-cover layer: both compare the same two seasons.
+    url: "/cells_ndvi_change.geojson",
+    caption:
+      "Where the ground has warmed faster or slower than the city as a whole over about nine years, hot season to hot season.",
+  },
 };
 
 const HVI_LEGEND_BINS = [
@@ -258,7 +314,15 @@ const HVI_LEGEND_BINS = [
   { color: "#bd0026", label: "80+" },
 ];
 
-function Legend({ layer }: { layer: LayerId }) {
+/** "2017" from a season window, or null when the build did not record one. */
+function seasonYear(window: { end: string } | undefined): string | null {
+  return window ? window.end.slice(0, 4) : null;
+}
+
+function Legend({ layer, profiles }: { layer: LayerId; profiles: WardProfileData | null }) {
+  const fromYear = seasonYear(profiles?.change_windows?.previous);
+  const toYear = seasonYear(profiles?.change_windows?.current);
+  const span = fromYear && toYear ? `${fromYear} to ${toYear}` : "about nine years";
   return (
     <Card className="absolute bottom-6 left-2 z-[1000] max-w-[240px] gap-0 bg-background/95 p-3 text-xs backdrop-blur-sm">
       {layer === "hvi" && (
@@ -309,7 +373,7 @@ function Legend({ layer }: { layer: LayerId }) {
       )}
       {layer === "ndvi_change" && (
         <>
-          <p className="mb-1.5 font-semibold text-foreground">Green cover since 2016-17</p>
+          <p className="mb-1.5 font-semibold text-foreground">Green cover, {span}</p>
           <div className="space-y-1 text-foreground">
             <div className="flex items-center gap-2">
               <span className="h-3 w-3 rounded-sm" style={{ background: "#4ade80" }} aria-hidden="true" />
@@ -324,6 +388,33 @@ function Legend({ layer }: { layer: LayerId }) {
               <span>Lost vegetation</span>
             </div>
           </div>
+        </>
+      )}
+      {layer === "heat_change" && (
+        <>
+          <p className="mb-1.5 font-semibold text-foreground">Surface heat, {span}</p>
+          <div className="space-y-1 text-foreground">
+            <div className="flex items-center gap-2">
+              <span className="h-3 w-3 shrink-0 rounded-sm" style={{ background: HEAT_CHANGE_COLORS.faster }} aria-hidden="true" />
+              <span>Warmed faster than the city</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span
+                className="h-3 w-3 shrink-0 rounded-sm border border-border"
+                style={{ background: HEAT_CHANGE_COLORS.in_line }}
+                aria-hidden="true"
+              />
+              <span>In line with the city</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="h-3 w-3 shrink-0 rounded-sm" style={{ background: HEAT_CHANGE_COLORS.slower }} aria-hidden="true" />
+              <span>Warmed slower than the city</span>
+            </div>
+          </div>
+          <p className="mt-1.5 text-[10px] leading-snug text-muted-foreground">
+            Faster or slower means by more than 1°C. Measured against the city&apos;s own change, because one
+            year&apos;s weather differs from another&apos;s. Land surface, not air.
+          </p>
         </>
       )}
     </Card>
@@ -487,6 +578,7 @@ export default function WardChoropleth({
   onMapViewChange?: (view: MapView) => void;
 }) {
   const [cache, setCache] = useState<Partial<Record<LayerId, FeatureCollection>>>({});
+  const { t } = useLanguage();
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -508,12 +600,16 @@ export default function WardChoropleth({
   // need the profiles as they are then, without rebinding 900 layers when the
   // file arrives. Until it does, the card shows the name alone.
   const profilesRef = useRef<WardProfileData | null>(null);
+  // The same file again as state, for the legend, which does re-render.
+  const [profiles, setProfiles] = useState<WardProfileData | null>(null);
   useEffect(() => {
     let cancelled = false;
     fetch(WARD_PROFILES_URL)
       .then((res) => (res.ok ? (res.json() as Promise<WardProfileData>) : null))
       .then((json) => {
-        if (!cancelled && json) profilesRef.current = json;
+        if (cancelled || !json) return;
+        profilesRef.current = json;
+        setProfiles(json);
       })
       .catch(() => undefined);
     return () => {
@@ -528,6 +624,36 @@ export default function WardChoropleth({
   const hviGridStyle = useMemo(() => styleHviGrid(selectedWardId), [selectedWardId]);
   const plantabilityStyle = useMemo(() => stylePlantability(selectedWardId), [selectedWardId]);
   const ndviStyle = useMemo(() => styleNdviChange(selectedWardId), [selectedWardId]);
+  const heatChangeStyle = useMemo(() => styleHeatChange(selectedWardId), [selectedWardId]);
+
+  // Places are fetched the first time any kind is switched on, and kept.
+  const [shownKinds, setShownKinds] = useState<ReadonlySet<PlaceKind>>(new Set());
+  const [places, setPlaces] = useState<Feature<Point, PlaceProps>[] | null>(null);
+  const wantPlaces = shownKinds.size > 0;
+  useEffect(() => {
+    if (!wantPlaces || places) return;
+    let cancelled = false;
+    fetch(PLACES_URL)
+      .then((res) => (res.ok ? (res.json() as Promise<FeatureCollection<Point, PlaceProps>>) : null))
+      .then((json) => {
+        if (!cancelled) setPlaces(json?.features ?? []);
+      })
+      .catch(() => {
+        if (!cancelled) setPlaces([]);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [wantPlaces, places]);
+
+  function toggleKind(kind: PlaceKind) {
+    setShownKinds((prev) => {
+      const next = new Set(prev);
+      if (next.has(kind)) next.delete(kind);
+      else next.add(kind);
+      return next;
+    });
+  }
 
   // Selection changes restyle the already-mounted layer in place via the ref
   // below, and never go through `key`. Remounting on every ward click tears the
@@ -543,8 +669,10 @@ export default function WardChoropleth({
       layerRef.current.setStyle(hviGridStyle as (f?: Feature<Geometry>) => PathOptions);
     else if (activeLayer === "plantability")
       layerRef.current.setStyle(plantabilityStyle as (f?: Feature<Geometry>) => PathOptions);
+    else if (activeLayer === "heat_change")
+      layerRef.current.setStyle(heatChangeStyle as (f?: Feature<Geometry>) => PathOptions);
     else layerRef.current.setStyle(ndviStyle as (f?: Feature<Geometry>) => PathOptions);
-  }, [hviStyle, hviGridStyle, plantabilityStyle, ndviStyle, activeLayer]);
+  }, [hviStyle, hviGridStyle, plantabilityStyle, ndviStyle, heatChangeStyle, activeLayer]);
 
   /** Every layer resolves a click to a ward: the cell layers carry `ward_id`
    *  too, so clicking a grid cell opens its parent ward. */
@@ -598,7 +726,7 @@ export default function WardChoropleth({
                   title={LAYER_META[id].caption}
                   className="whitespace-nowrap px-1.5 text-xs"
                 >
-                  {LAYER_META[id].label}
+                  {t(`layer.${id}`)}
                 </TabsTrigger>
               ))}
             </TabsList>
@@ -656,7 +784,37 @@ export default function WardChoropleth({
         </div>
       </Card>
 
-      <Legend layer={activeLayer} />
+      <Legend layer={activeLayer} profiles={profiles} />
+
+      <Card className="absolute left-2 top-24 z-[1000] w-fit gap-1 bg-background/95 p-1.5 text-xs backdrop-blur-sm">
+        <p className="px-1 font-semibold text-foreground">{t("places.title")}</p>
+        <div className="flex flex-col gap-0.5" role="group" aria-label="Places shown on the map">
+          {PLACE_KINDS.map(({ kind, letter }) => {
+            const on = shownKinds.has(kind);
+            const count = places?.filter((p) => p.properties.kind === kind).length;
+            return (
+              <button
+                key={kind}
+                type="button"
+                aria-pressed={on}
+                onClick={() => toggleKind(kind)}
+                className={`flex items-center gap-1.5 rounded px-1 py-0.5 text-left hover:bg-surface-hover ${on ? "text-foreground" : "text-muted-foreground"}`}
+              >
+                <span className={`place-pin ${on ? "" : "place-pin-off"}`} aria-hidden>
+                  {letter}
+                </span>
+                <span>{t(`places.${kind}`)}</span>
+                {on && typeof count === "number" && <span className="font-mono text-[10px] text-muted-foreground">{count}</span>}
+              </button>
+            );
+          })}
+        </div>
+        {wantPlaces && (
+          <p className="max-w-[9.5rem] px-1 text-[10px] leading-snug text-muted-foreground">
+            As mapped in OpenStreetMap. Bus stops and markets are far from complete.
+          </p>
+        )}
+      </Card>
 
       {(error || locateError) && (
         <div className="absolute inset-x-0 top-12 z-[1000] mx-auto flex w-fit max-w-[90%] flex-col items-center gap-1">
@@ -727,6 +885,40 @@ export default function WardChoropleth({
             onEachFeature={selectFrom as (f: Feature<Geometry>, l: Layer) => void}
           />
         )}
+        {data && activeLayer === "heat_change" && (
+          <GeoJSON
+            key={`heat_change-${isFullscreen}`}
+            ref={layerRef}
+            data={data as FeatureCollection<Geometry, CellNdviProps>}
+            style={heatChangeStyle as (f?: Feature<Geometry>) => PathOptions}
+            onEachFeature={selectFrom as (f: Feature<Geometry>, l: Layer) => void}
+          />
+        )}
+        <Pane name="places" style={{ zIndex: PLACE_PANE_Z }}>
+          {(places ?? [])
+            .filter((p) => shownKinds.has(p.properties.kind))
+            .map((p) => {
+              const [lng, lat] = p.geometry.coordinates;
+              const kind = PLACE_KINDS.find((k) => k.kind === p.properties.kind);
+              return (
+                <Marker
+                  key={`${p.properties.kind}-${lng}-${lat}`}
+                  position={[lat, lng]}
+                  icon={PLACE_ICONS[p.properties.kind]}
+                  pane="places"
+                  keyboard={false}
+                  eventHandlers={{ click: () => onSelectWard?.(p.properties.ward_id) }}
+                >
+                  <Tooltip direction="top" offset={[0, -8]} opacity={1}>
+                    <span className="font-medium">{p.properties.name ?? kind?.one}</span>
+                    <br />
+                    {p.properties.name ? `${kind?.one} · ` : ""}
+                    {p.properties.ward_id}
+                  </Tooltip>
+                </Marker>
+              );
+            })}
+        </Pane>
         <FlyToSelection selectedWardId={selectedWardId} wardsGeo={wardsGeo} />
         <InvalidateSizeOnChange dep={isFullscreen} />
         <FitToWardExtent wardsGeo={wardsGeo} enabled={!mapView} />

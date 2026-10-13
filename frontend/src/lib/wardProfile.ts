@@ -24,7 +24,14 @@ export type CityProfile = {
   slum_pct: number;
   hospital_dist_m: number;
   impervious_pct: number;
+  /** City-wide share mapped as tree cover, 0 to 100. Absent from older builds. */
+  tree_pct?: number | null;
+  /** City-wide mean surface-temperature change between the two seasons in `change_windows`. */
+  lst_change_c?: number | null;
 };
+
+/** A season of imagery, as ISO dates. */
+export type SeasonWindow = { start: string; end: string };
 
 export type NeighbourRef = { ward_id: string; hvi: number };
 
@@ -54,6 +61,14 @@ export type WardProfile = {
   neighbours: string[];
   /** Which k-means locality type this one was assigned (see `locality_types`). */
   type_id?: number;
+  /** Share of the locality ESA WorldCover maps as tree cover, 0 to 100. Context, not part of the score. */
+  tree_pct?: number | null;
+  /**
+   * How much more (positive) or less the surface warmed here than across the
+   * city between the two seasons in `change_windows`. Degrees C. Context, not
+   * part of the score.
+   */
+  lst_change_vs_city_c?: number | null;
   coolest_neighbour?: NeighbourRef;
   hottest_neighbour?: NeighbourRef;
 };
@@ -80,6 +95,8 @@ export type WardProfileData = {
   indicator_stats?: Partial<Record<IndicatorKey, { mean: number; std: number; direction: 1 | -1 }>>;
   /** The k-means grouping of localities into kinds of place. Absent from older profile files. */
   locality_types?: LocalityTypes;
+  /** The two seasons the change layers compare. Absent from older builds. */
+  change_windows?: { previous: SeasonWindow; current: SeasonWindow };
   city: CityProfile;
   wards: WardProfile[];
 };

@@ -6,13 +6,17 @@ import { usePathname } from "next/navigation";
 import { Menu, X, Thermometer } from "lucide-react";
 import Logo from "./Logo";
 import ThemeToggle from "./ThemeToggle";
+import LanguageSwitch from "./LanguageSwitch";
+import type { StringKey } from "@/lib/i18n";
+import { useLanguage } from "@/lib/useLanguage";
 import { useWeather } from "@/lib/useWeather";
 
-const NAV = [
-  { href: "/dashboard", label: "Dashboard" },
-  { href: "/cities", label: "Cities" },
-  { href: "/calculator", label: "Calculator" },
-  { href: "/simulate", label: "Simulator" },
+/** In the order a visitor uses them: see the map, compare, test a plan, check the method. */
+const NAV: { href: string; label: StringKey }[] = [
+  { href: "/dashboard", label: "nav.map" },
+  { href: "/calculator", label: "nav.calculator" },
+  { href: "/simulate", label: "nav.simulator" },
+  { href: "/data", label: "nav.data" },
 ];
 
 export default function SiteHeader({ compact = false }: { compact?: boolean }) {
@@ -20,6 +24,7 @@ export default function SiteHeader({ compact = false }: { compact?: boolean }) {
   const [open, setOpen] = useState(false);
   const closeButton = useRef<HTMLButtonElement>(null);
   const { weather, tempFormatted, isStale, lastUpdatedFormatted } = useWeather();
+  const { t } = useLanguage();
 
   /** The panel covers the page, so the page behind it must not scroll under it. */
   useEffect(() => {
@@ -64,7 +69,7 @@ export default function SiteHeader({ compact = false }: { compact?: boolean }) {
                     : "text-muted-foreground hover:bg-surface-hover hover:text-foreground"
                 }`}
               >
-                {item.label}
+                {t(item.label)}
               </Link>
             );
           })}
@@ -98,6 +103,7 @@ export default function SiteHeader({ compact = false }: { compact?: boolean }) {
               )}
             </div>
           )}
+          <LanguageSwitch />
           <ThemeToggle />
         </div>
 
@@ -170,7 +176,7 @@ export default function SiteHeader({ compact = false }: { compact?: boolean }) {
                     : "text-muted-foreground hover:bg-surface-hover hover:text-foreground"
                 }`}
               >
-                {item.label}
+                {t(item.label)}
               </Link>
             );
           })}
@@ -189,9 +195,12 @@ export default function SiteHeader({ compact = false }: { compact?: boolean }) {
                 )}
               </div>
             ) : (
-              <span className="text-xs text-muted-foreground">UrbanCanopy</span>
+              <span />
             )}
-            <ThemeToggle />
+            <span className="flex items-center gap-3">
+              <LanguageSwitch />
+              <ThemeToggle />
+            </span>
           </div>
         </div>
       </div>

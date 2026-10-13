@@ -11,7 +11,9 @@
  *     NDVI             seasonal median vegetation index, same scenes
  *     NDVI_prev        the same index nine years earlier, for green-cover change
  *     lst_clear_obs    cloud-free observations behind each cell's LST
+ *     LST_C_prev       the same season's LST nine years earlier, for the warming layer
  *     impervious_pct   share of the cell that is WorldCover class 50 (built-up)
+ *     tree_pct         share of the cell that is WorldCover class 10 (tree cover)
  *     worldcover_class the cell's most common ESA WorldCover 2021 class
  *     dist_to_water_m  mean distance to the nearest water, wetland or mangrove pixel
  *
@@ -63,8 +65,9 @@ const QA_FILL = 1 << 0;
 const QA_CLOUD = 1 << 3;
 const QA_CLOUD_SHADOW = 1 << 4;
 const WORLDCOVER_BUILTUP_CLASS = 50;
+const WORLDCOVER_TREE_CLASS = 10;
 
-/** How far back the green-cover baseline sits. Roughly a decade is long enough to be a trend rather than weather. */
+/** How far back the green-cover and surface-heat baseline sits. Roughly a decade is long enough to be a trend rather than weather. */
 const BASELINE_GAP_YEARS = 9;
 /** Below this many cloud-free observations a cell's LST is flagged, as in the Earth Engine stage (issue #94). */
 const MIN_CLEAR_OBS = 3;
@@ -223,6 +226,7 @@ async function main() {
     const lst = [];
     const ndviNow = [];
     const ndviThen = [];
+    const lstThen = [];
     const obs = [];
     forEachPixelIn(cell.utm, lattice, (i) => {
       if (!Number.isNaN(now.lst[i])) lst.push(now.lst[i] * ST_SCALE + ST_OFFSET - 273.15);
@@ -231,6 +235,7 @@ async function main() {
       if (then.red) {
         const b = ndvi(then.red, then.nir, i);
         if (!Number.isNaN(b)) ndviThen.push(b);
+        if (!Number.isNaN(then.lst[i])) lstThen.push(then.lst[i] * ST_SCALE + ST_OFFSET - 273.15);
       }
       obs.push(now.clearObs[i]);
     });
@@ -238,6 +243,7 @@ async function main() {
     p.LST_C = lst.length ? mean(lst) : null;
     p.NDVI = ndviNow.length ? mean(ndviNow) : null;
     p.NDVI_prev = ndviThen.length ? mean(ndviThen) : null;
+    p.LST_C_prev = lstThen.length ? mean(lstThen) : null;
     p.lst_clear_obs = obs.length ? mean(obs) : null;
     p.lst_obs_sparse = p.lst_clear_obs !== null && p.lst_clear_obs < MIN_CLEAR_OBS;
   }
@@ -292,11 +298,15 @@ async function main() {
     const p = cell.feature.properties;
     if (total === 0) {
       p.impervious_pct = null;
+      p.tree_pct = null;
       p.worldcover_class = null;
       p.dist_to_water_m = null;
       continue;
     }
     p.impervious_pct = ((counts.get(WORLDCOVER_BUILTUP_CLASS) ?? 0) / total) * 100;
+    // Land mapped as tree cover at 10 m. It stands in for canopy cover and runs
+    // low in built-up cells: a street tree narrower than a pixel is not counted.
+    p.tree_pct = ((counts.get(WORLDCOVER_TREE_CLASS) ?? 0) / total) * 100;
     p.worldcover_class = [...counts].sort((a, b) => b[1] - a[1] || a[0] - b[0])[0][0];
     p.dist_to_water_m = distanceSum / total;
   }
@@ -355,7 +365,7 @@ async function main() {
   console.log(`     dominant land cover by cell: ${[...classes].sort((a, b) => b[1] - a[1]).map(([k, n]) => `${k}:${n}`).join(" ")}`);
   console.log(
     `\n${ok ? "GO" : "CHECK WARNINGS"}: mean LST ${meanLst.toFixed(2)} C (${Math.min(...lstValues).toFixed(1)} to ${Math.max(...lstValues).toFixed(1)}), ` +
-      `mean NDVI ${meanNdvi.toFixed(3)}, mean impervious ${mean(having("impervious_pct")).toFixed(1)}%`,
+      `mean NDVI ${meanNdvi.toFixed(3)}, mean impervious ${mean(having("impervious_pct")).toFixed(1)}%, mean tree cover ${mean(having("tree_pct")).toFixed(1)}%`,
   );
   if (!ok) process.exitCode = 2;
 }

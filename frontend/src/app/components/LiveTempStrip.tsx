@@ -2,6 +2,7 @@
 
 import { Thermometer } from "lucide-react";
 import { ACTIVE_CITY } from "@/lib/city";
+import { useLanguage } from "@/lib/useLanguage";
 import { useWeather } from "@/lib/useWeather";
 
 /**
@@ -13,6 +14,7 @@ import { useWeather } from "@/lib/useWeather";
 export default function LiveTempStrip() {
   const { weather, status, isStale, tempFormatted, feelsLikeFormatted, lastUpdatedFormatted } =
     useWeather();
+  const { t } = useLanguage();
 
   const isOk = (status === "ok" || status === "idle") && weather !== null;
   const isLoading = status === "loading" && weather === null;
@@ -38,15 +40,18 @@ export default function LiveTempStrip() {
         <Thermometer className="h-4 w-4 shrink-0 text-brand-teal" aria-hidden />
 
         {isLoading && (
-          <span className="text-foreground">Checking {ACTIVE_CITY.name} live weather…</span>
+          <span className="text-foreground">{t("live.checking", { city: ACTIVE_CITY.name })}</span>
         )}
 
         {isOk && (
           <span className="text-foreground">
-            {weather.city || ACTIVE_CITY.name} now{" "}
-            <span className="font-mono font-medium text-foreground">{tempFormatted}</span> air
+            {t("live.now", { city: weather.city || ACTIVE_CITY.name })}{" "}
+            <span className="font-mono font-medium text-foreground">{tempFormatted}</span> {t("live.air")}
             {feelsLikeFormatted && (
-              <span className="text-muted-foreground"> (feels like {feelsLikeFormatted})</span>
+              <span className="text-muted-foreground">
+                {" "}
+                ({t("live.feels")} {feelsLikeFormatted})
+              </span>
             )}
             {isStale && lastUpdatedFormatted && (
               <span className="ml-1 text-xs text-amber-500/90 font-mono">
@@ -57,11 +62,11 @@ export default function LiveTempStrip() {
         )}
 
         {isUnavailable && (
-          <span className="text-foreground">Live air temperature unavailable</span>
+          <span className="text-foreground">{t("live.unavailable")}</span>
         )}
       </span>
       <span className="hero-text-shadow max-w-md text-xs leading-relaxed text-foreground">
-        The map measures land-surface temperature, a related but different number.
+        {t("live.note")}
       </span>
     </div>
   );

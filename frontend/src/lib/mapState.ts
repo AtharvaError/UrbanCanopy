@@ -1,6 +1,6 @@
 /** URL-safe state for the dashboard's Leaflet view. */
 
-export const MAP_LAYERS = ["hvi", "hvi_grid", "plantability", "ndvi_change"] as const;
+export const MAP_LAYERS = ["hvi", "hvi_grid", "plantability", "ndvi_change", "heat_change"] as const;
 export type MapLayer = (typeof MAP_LAYERS)[number];
 
 export type MapView = { lat: number; lng: number; zoom: number };

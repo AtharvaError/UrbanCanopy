@@ -1,6 +1,6 @@
 {
-  "started_at": "2026-10-12T07:30:14.934Z",
-  "finished_at": "2026-10-12T07:30:15.148Z",
+  "started_at": "2026-10-13T06:05:54.481Z",
+  "finished_at": "2026-10-13T06:05:55.690Z",
   "city": "nagpur",
   "build": "open",
   "composite_window": {
@@ -48,7 +48,14 @@
       "script": "07_profiles.mjs",
       "status": "ok",
       "returncode": 0,
-      "seconds": 0.2
+      "seconds": 0.7
+    },
+    {
+      "id": "08",
+      "script": "08_places.mjs",
+      "status": "ok",
+      "returncode": 0,
+      "seconds": 0.5
     }
   ]
 }

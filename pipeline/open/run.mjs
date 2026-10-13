@@ -30,6 +30,7 @@ const STAGES = [
   { id: "05", script: "05_index.mjs" },
   { id: "06", script: "06_nbs.mjs" },
   { id: "07", script: "07_profiles.mjs" },
+  { id: "08", script: "08_places.mjs" },
 ];
 
 /** What the site reads. Everything else in the city's data directory is intermediate. */
@@ -39,6 +40,7 @@ const PUBLISHED = [
   "cells_ndvi_change.geojson",
   "nbs_recommendations.json",
   "ward_profiles.json",
+  "places.geojson",
   "hero_city.json",
   "hero_region.json",
   "hvi_pca_log.json",

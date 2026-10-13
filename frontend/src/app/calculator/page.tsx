@@ -3,8 +3,7 @@ import path from "node:path";
 import type { Metadata } from "next";
 import SiteHeader from "../components/SiteHeader";
 import SiteFooter from "../components/SiteFooter";
-import ScoreExplainer from "../components/ScoreExplainer";
-import LocalityTypes from "../components/LocalityTypes";
+import Link from "next/link";
 import CalculatorPanel from "./CalculatorPanel";
 import { ACTIVE_CITY } from "@/lib/city";
 import { scoreModelFrom } from "@/lib/scoreFormula";
@@ -13,7 +12,7 @@ import type { WardProfileData } from "@/lib/wardProfile";
 export const metadata: Metadata = {
   title: "Zone calculator | UrbanCanopy",
   description:
-    "Compare three to five localities, edit any indicator or weight, and see the heat priority score, band and rank change. The scoring formula, its weights and its limits in one place.",
+    "Compare three to five localities, edit any indicator or weight, and see the heat priority score, band and rank change.",
 };
 
 function loadProfiles(): WardProfileData | null {
@@ -37,15 +36,17 @@ export default function CalculatorPage() {
           <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
             Compare a handful of {ACTIVE_CITY.name}&apos;s localities side by side. Change a measured value or
             the weight of a factor and the score, its priority band and its rank update as you type. It is the
-            same formula that colours the map, shown in full below.
+            same formula that colours the map, set out in full under{" "}
+            <Link href="/data" className="font-medium text-brand-teal hover:underline">
+              Data &amp; method
+            </Link>
+            .
           </p>
         </div>
 
         {data && model ? (
           <div className="mt-8 space-y-6">
-            <ScoreExplainer model={model} />
             <CalculatorPanel data={data} model={model} />
-            <LocalityTypes data={data} />
           </div>
         ) : (
           <p className="mt-8 rounded-xl border border-border bg-surface p-6 text-sm text-muted-foreground">

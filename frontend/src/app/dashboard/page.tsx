@@ -9,6 +9,7 @@ import WardCompare from "../components/WardCompare";
 import SiteHeader from "../components/SiteHeader";
 import DataVintageBar from "../components/DataVintageBar";
 import HeatOutlookBar from "../components/HeatOutlookBar";
+import T from "../components/T";
 import {
   parseWardParam,
   readStoredWards,
@@ -61,15 +62,14 @@ function FirstVisitHint() {
   return (
     <div className="flex items-center justify-between gap-4 border-b border-brand-teal/20 bg-brand-teal/10 px-6 py-2 text-sm text-foreground">
       <p>
-        Colors rank Nagpur&apos;s localities by heat vulnerability. Click any one, on the map or in
-        the list, to see its breakdown and recommendation. Switch layers top-right.
+        <T k="dash.hint" />
       </p>
       <button
         onClick={dismissFirstVisitHint}
         className="shrink-0 rounded px-2 py-0.5 text-xs font-medium hover:bg-brand-teal/10"
         aria-label="Dismiss hint"
       >
-        Got it
+        <T k="dash.gotit" />
       </button>
     </div>
   );

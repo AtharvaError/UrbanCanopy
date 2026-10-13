@@ -89,6 +89,12 @@ and they do not say what to do.
 | F13 | Ranking bars | A bar per locality in the ranked list, on one 0 to 100 scale. | Should | Built |
 | F14 | Map hover card | Band, score, rank, main driver and four measured values under the pointer. | Should | Built |
 | F15 | Kinds of locality | K-means groups the 30 localities into types by their five indicators. Shown on the calculator page, in the planner and on the hover card. | Should | Built |
+| F19 | Measured tree cover | The tree slider counts from the tree cover ESA WorldCover maps in each cell, so only added canopy cools. | Must | Built |
+| F20 | Getting hotter layer | Where the surface warmed faster or slower than the city between 2017 and 2026. | Should | Built |
+| F21 | Places on the map | Hospitals, schools, bus stops and markets from OpenStreetMap as pins. | Should | Built |
+| F22 | Action brief | A one-page printable summary per locality. | Should | Built |
+| F23 | Hindi and Marathi | A language switch for the main labels and the AI explanation. | Should | Built |
+| F24 | Data & method page | Formula, what is measured or assumed, locality types, sources. | Should | Built |
 | F17 | AI explainer | A plain-language reading of a locality's numbers, generated on request through a local server. Optional; needs a key. | Could | Built |
 | F18 | Live temperature | Current air temperature from OpenWeatherMap in the header, landing page and outlook bar, refreshed every five minutes. Optional; needs a key. | Should | Built |
 | F16 | Live heat outlook | Live air temperature (OpenWeatherMap) and four-day forecast highs (Open-Meteo) on the dashboard. A stated threshold rule turns the hottest day into an alert level and names the localities to act in first. Weather never changes a score. | Should | Built |
@@ -257,11 +263,13 @@ after that point has not been checked.
 | Scenario builder on Nagpur data | Done |
 | Mapbox basemap | Done |
 | Methodology, Mission, Contribute, Contact pages | Removed |
-| Automated tests updated for Nagpur (312 passing, plus 14 for the data build) | Done |
+| Automated tests updated for Nagpur (335 passing, plus 14 for the data build) | Done |
 | Zone calculator, score card, people-focused suggestions, ranking bars, hover card | Done |
 | K-means locality types | Done |
 | Live heat outlook on the dashboard | Done |
 | AI explainer and OpenWeatherMap live temperature merged | Done |
+| Tree-cover baseline, warming layer, places, action brief, languages, new page layout | Done |
+| Official ward boundaries | Not available as open data; needs a file from the municipal corporation |
 | README rewritten for UrbanCanopy and Nagpur | Done |
 | Remaining sections of the planner brief | Waiting on the full brief |
 

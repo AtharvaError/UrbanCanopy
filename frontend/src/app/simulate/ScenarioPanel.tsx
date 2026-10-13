@@ -237,7 +237,18 @@ export default function ScenarioPanel({ data }: { data: ScenarioData }) {
                 />
                 <p className="mt-1 font-mono text-sm text-muted-foreground">{inputs.canopyPct}% cover</p>
                 <p className="mt-1 text-xs text-muted-foreground">
-                  Only in cells that pass the plantability filter. Ziter et al. 2019 found negligible
+                  A target, counted from the tree cover measured in each cell today
+                  {selectedWards.length > 0 && (
+                    <>
+                      {" "}
+                      (
+                      <span className="font-mono text-foreground">
+                        {Math.round(selectedWards.reduce((s, w) => s + w.treePct * w.cells, 0) / Math.max(selectedWards.reduce((s, w) => s + w.cells, 0), 1))}%
+                      </span>{" "}
+                      across the selected localities, ESA WorldCover 2021)
+                    </>
+                  )}
+                  . Only in cells that pass the plantability filter. Ziter et al. 2019 found negligible
                   daytime cooling below ~{CANOPY_THRESHOLD_PCT}% canopy.
                 </p>
               </div>

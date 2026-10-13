@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { areasForWard } from "@/lib/wardAreas";
 import { hviColor } from "@/lib/hvi";
+import { useLanguage } from "@/lib/useLanguage";
 import { useWardData } from "@/lib/useWardData";
 import WardDetail from "./WardDetail";
 import WardDetailHeader from "./WardDetailHeader";
@@ -39,6 +40,7 @@ export default function WardPanel({
   onCompare?: () => void;
 }) {
   const { wards, recs, profiles, error } = useWardData();
+  const { t } = useLanguage();
   const [search, setSearch] = useState("");
   const [copied, setCopied] = useState(false);
 
@@ -120,9 +122,9 @@ export default function WardPanel({
   return (
     <div className="flex h-full min-h-0 flex-col">
       <div className="border-b border-border px-4 py-3">
-        <h2 className="text-sm font-semibold text-foreground">{wards.length} localities, ranked by heat vulnerability</h2>
+        <h2 className="text-sm font-semibold text-foreground">{t("list.title", { n: wards.length })}</h2>
         <p className="mt-1 text-xs leading-snug text-muted-foreground">
-          Click a locality, here or on the map, to open its full profile.
+          {t("list.sub")}
         </p>
         <div className="relative mt-2">
           <Search className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" aria-hidden />
@@ -132,7 +134,7 @@ export default function WardPanel({
             name="ward-search"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Find a locality…"
+            placeholder={t("list.search")}
             className="pl-8"
           />
         </div>

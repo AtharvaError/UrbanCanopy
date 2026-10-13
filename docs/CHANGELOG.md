@@ -7,6 +7,23 @@ All notable changes to this project are documented here. Format based on
 ## [Unreleased]
 
 ### Added
+- Measured tree cover. The satellite stage records the share of each cell that
+  ESA WorldCover maps as tree cover, and the scenario builder's tree slider now
+  counts from it: the slider is a target, and only the canopy added above
+  today's cover cools. Before, every cell was treated as bare.
+- A "Getting hotter" map layer: surface temperature in the 2017 and 2026 hot
+  seasons, each cell read against the city-wide change so that one year's
+  weather cancels out. Cells more than 1°C either side are marked.
+- Places on the map. A new build stage (`08_places.mjs`) fetches hospitals,
+  schools, bus stops and markets from OpenStreetMap; the map shows them as
+  lettered pins, switched on per kind.
+- A printable action brief per locality at `/brief/<locality>`, opened from
+  "Download brief" in the planner: score, the points behind it, tree cover and
+  warming, actions with their rules, places, limits and sources.
+- Hindi and Marathi for the main labels, chosen from the header and remembered
+  in the browser. The AI explainer answers in the chosen language.
+- A "Data & method" page holding the scoring formula, a table of what is
+  measured, modelled or assumed, the locality types and the sources.
 - Nagpur, as the published city, under the name UrbanCanopy. 30 approximate
   localities, a 500 m grid of 932 cells, and five indicators (surface
   temperature, green cover, built-up share, population density, hospital
@@ -65,6 +82,13 @@ All notable changes to this project are documented here. Format based on
   hover card.
 
 ### Changed
+- The AI explainer runs inside the site at `/api/heat-explain`. It called a
+  separate local server on port 3001, so it could not work on a hosted copy.
+  Its prompt now forbids figures that are not in the data and health claims.
+- The landing page is shorter and follows one order: what the tool is, the top
+  five, how it works, what you can do, and the sources.
+- The menu is Map, Calculator, Simulator, Data & method. The Cities page is
+  removed: the tool covers one city.
 - The README describes UrbanCanopy and Nagpur. It described UCIP and Mumbai.
 - The site reads its area names, cell size and indicator set from the published
   data and the city config. "24 wards", "541 cells", "1 km" and the seven

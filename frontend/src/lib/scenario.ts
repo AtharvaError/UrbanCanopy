@@ -10,7 +10,10 @@
  *
  *   Trees        only in cells that pass the plantability filter (stage 06).
  *                Everywhere else the canopy term is zero, however far the
- *                slider is pushed.
+ *                slider is pushed. And only the canopy that is added counts:
+ *                the slider is a target, each cell starts from the tree cover
+ *                measured in it, and the cooling its existing trees already
+ *                give is in today's temperature, so it is not counted again.
  *   Cool roofs   scaled by the cell's impervious share. The slider is an
  *                albedo increase on built-up surface, and a cell that is 30%
  *                built-up only raises its area albedo by 30% of it. Impervious
@@ -40,12 +43,19 @@ export type ScenarioCell = {
   /** 0 to 100. */
   imperviousPct: number;
   plantable: boolean;
+  /**
+   * Share of the cell mapped as tree cover today, 0 to 100 (ESA WorldCover, 10 m).
+   * It stands in for canopy cover and runs low where trees are narrower than a
+   * pixel. Absent from builds made before the tree-cover baseline, where it
+   * counts as zero.
+   */
+  treePct?: number;
   /** WorldPop density times cell area: a modelled surface, not a census count. */
   population: number;
 };
 
 export type ScenarioInputs = {
-  /** Target canopy cover in treated plantable cells, 0 to 100. */
+  /** Target canopy cover in treated plantable cells, 0 to 100. A cell already above it is left as it is. */
   canopyPct: number;
   /** Albedo increase on built-up surface, 0 to 1. */
   albedoIncrease: number;
@@ -74,11 +84,16 @@ const NO_COOLING: CellCooling = {
 
 /** What the interventions deliver in one treated cell, after the three reach rules. */
 export function cellCooling(
-  cell: Pick<ScenarioCell, "imperviousPct" | "plantable">,
+  cell: Pick<ScenarioCell, "imperviousPct" | "plantable" | "treePct">,
   inputs: ScenarioInputs,
 ): CellCooling {
   const builtShare = Math.min(Math.max(cell.imperviousPct, 0), 100) / 100;
-  const canopyC = cell.plantable ? canopyCoolingC(inputs.canopyPct) : 0;
+  const treesToday = Math.min(Math.max(cell.treePct ?? 0, 0), 100);
+  // Raising canopy from today's cover to the target. A target below today's
+  // cover changes nothing: the scenario plants trees, it does not fell them.
+  const canopyC = cell.plantable
+    ? canopyCoolingC(Math.max(inputs.canopyPct, treesToday)) - canopyCoolingC(treesToday)
+    : 0;
   const roof = coolRoofCoolingC(Math.max(inputs.albedoIncrease, 0) * builtShare);
   const parkC = pocketParkCoolingC(Math.min(Math.max(inputs.parkAreaPct, 0), builtShare * 100));
   return {
@@ -138,6 +153,8 @@ export type WardOutcome = {
   selected: boolean;
   cells: number;
   plantableCells: number;
+  /** Mean measured tree cover across the ward's cells today, 0 to 100. */
+  treePct: number;
   meanCoolingC: number;
   hviBefore: number;
   hviAfter: number;
@@ -197,12 +214,13 @@ export function runScenario(
     };
   });
 
-  type Tally = { cells: number; plantable: number; cooling: number; before: number; after: number };
+  type Tally = { cells: number; plantable: number; trees: number; cooling: number; before: number; after: number };
   const byWard = new Map<string, Tally>();
   cells.forEach((cell, i) => {
-    const t = byWard.get(cell.wardId) ?? { cells: 0, plantable: 0, cooling: 0, before: 0, after: 0 };
+    const t = byWard.get(cell.wardId) ?? { cells: 0, plantable: 0, trees: 0, cooling: 0, before: 0, after: 0 };
     t.cells += 1;
     t.plantable += cell.plantable ? 1 : 0;
+    t.trees += cell.treePct ?? 0;
     t.cooling += outcomes[i].totalC;
     t.before += cell.hvi;
     t.after += outcomes[i].hviAfter;
@@ -219,6 +237,7 @@ export function runScenario(
       selected: selectedWardIds.has(wardId),
       cells: t.cells,
       plantableCells: t.plantable,
+      treePct: t.trees / t.cells,
       meanCoolingC: t.cooling / t.cells,
       hviBefore: t.before / t.cells,
       hviAfter: t.after / t.cells,

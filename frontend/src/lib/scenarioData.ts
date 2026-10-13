@@ -64,6 +64,7 @@ export function scenarioCellsFrom(cellsGeo: FeatureCollection<Geometry, CellProp
       hvi: p.HVI,
       imperviousPct: p.impervious_pct ?? 0,
       plantable: p.plantable === true || p.plantable === 1,
+      treePct: typeof p.tree_pct === "number" ? p.tree_pct : 0,
       population: Math.round((p.pop_density_km2 ?? 0) * geometryAreaKm2(f.geometry)),
     };
   });

@@ -29,7 +29,7 @@ export default async function WardEmbed({ params }: { params: Promise<{ wardId: 
         <h1>{ward_id}</h1>
         <span className="embed-score" style={{ background: hviColor(HVI) }}>{HVI?.toFixed(1) ?? "n/a"}</span>
       </div>
-      <p>Priority {rank ?? "n/a"} of 24 · {n_cells ?? "n/a"} grid cells</p>
+      <p>Priority {rank ?? "n/a"} of {wards.features.length} · {n_cells ?? "n/a"} grid cells</p>
       <Link href={`/dashboard?ward=${encodeURIComponent(ward_id)}`} target="_blank" rel="noopener noreferrer">
         Open the full brief →
       </Link>

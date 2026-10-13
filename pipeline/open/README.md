@@ -38,7 +38,8 @@ npm test
 | 04 | `04_people.mjs` | Population density, distance to the nearest hospital | WorldPop, OpenStreetMap |
 | 05 | `05_index.mjs` | Scores, weights, area ranking, sensitivity | none |
 | 06 | `06_nbs.mjs` | Plantability and rule-based recommendations | none |
-| 07 | `07_profiles.mjs` | Green-cover change, area profiles with the published formula constants, k-means locality types, the landing-page model, the budget scenario | none |
+| 07 | `07_profiles.mjs` | Green-cover and surface-heat change, area profiles with the published formula constants, k-means locality types, the landing-page model, the budget scenario | none |
+| 08 | `08_places.mjs` | Hospitals, schools, bus stops and markets inside the city's areas, for the map | OpenStreetMap |
 
 Stage 01 is run once, by hand, when a city is set up:
 

@@ -47,6 +47,8 @@ export type CellNbsProps = {
   HVI: number | null;
   plantable: boolean | number | null;
   worldcover_class: number | null;
+  /** Share of the cell ESA WorldCover maps as tree cover, 0 to 100. Absent from older builds. */
+  tree_pct?: number | null;
   [key: string]: unknown;
 };
 
@@ -58,7 +60,21 @@ export type CellNdviProps = {
   NDVI_prev: number | null;
   ndvi_delta: number | null;
   change_class: "gained" | "stable" | "lost" | "unknown" | null;
+  /** Surface-temperature change between the two seasons, minus the city-wide change. Degrees C. */
+  lst_delta_vs_city?: number | null;
+  /** Whether the cell warmed faster or slower than the city as a whole. Absent from older builds. */
+  heat_change_class?: "faster" | "in_line" | "slower" | "unknown" | null;
   [key: string]: unknown;
+};
+
+/** What a mapped place is. The planner's people-focused actions name these kinds. */
+export type PlaceKind = "hospital" | "school" | "bus_stop" | "market";
+
+/** A point on the places layer (`public/places.geojson`), from OpenStreetMap. */
+export type PlaceProps = {
+  kind: PlaceKind;
+  name: string | null;
+  ward_id: string;
 };
 
 /**

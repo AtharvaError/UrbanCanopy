@@ -41,6 +41,29 @@ const ALL_WARDS = new Set(data.cells.map((c) => c.wardId));
 /** Any one published area: the tests below need a real id, not a particular one. */
 const ONE_AREA = data.cells[0].wardId;
 
+describe("cellCooling counts only the canopy that is added", () => {
+  const cell = { imperviousPct: 0, plantable: true };
+
+  it("matches the paper's curve when the cell has no trees to begin with", () => {
+    expect(cellCooling({ ...cell, treePct: 0 }, { ...NOTHING, canopyPct: 80 }).canopyC).toBeCloseTo(1, 10);
+    expect(cellCooling(cell, { ...NOTHING, canopyPct: 60 }).canopyC).toBeCloseTo(0.5, 10);
+  });
+
+  it("credits only the rise from today's cover to the target", () => {
+    // 60% today already gives 0.5 C, which is in the measured temperature. Reaching 80% adds the other 0.5.
+    expect(cellCooling({ ...cell, treePct: 60 }, { ...NOTHING, canopyPct: 80 }).canopyC).toBeCloseTo(0.5, 10);
+  });
+
+  it("gives nothing when the target is at or below today's cover", () => {
+    expect(cellCooling({ ...cell, treePct: 70 }, { ...NOTHING, canopyPct: 70 }).canopyC).toBe(0);
+    expect(cellCooling({ ...cell, treePct: 70 }, { ...NOTHING, canopyPct: 50 }).canopyC).toBe(0);
+  });
+
+  it("still needs the target to clear the threshold, however bare the cell is today", () => {
+    expect(cellCooling({ ...cell, treePct: 5 }, { ...NOTHING, canopyPct: 40 }).canopyC).toBe(0);
+  });
+});
+
 describe("cellCooling reach rules", () => {
   it("gives no canopy cooling to a cell that fails the plantability filter", () => {
     const blocked = cellCooling({ imperviousPct: 50, plantable: false }, CEILING);
@@ -171,11 +194,27 @@ describe("runScenario on the published cells", () => {
       data.pointsPerDegree,
     );
     const plantable = data.cells.filter((c) => c.plantable).length;
-    expect(result.summary.cellsCooled).toBe(plantable);
+    // A plantable cell already at the slider's ceiling has no canopy left to add.
+    const withRoom = data.cells.filter((c) => c.plantable && (c.treePct ?? 0) < MAX_REALISTIC_CANOPY_PCT).length;
+    expect(withRoom).toBeGreaterThan(0);
+    expect(result.summary.cellsCooled).toBe(withRoom);
     expect(result.summary.plantableCellsTreated).toBe(plantable);
     data.cells.forEach((cell, i) => {
-      expect(result.cells[i].canopyC > 0).toBe(cell.plantable);
+      expect(result.cells[i].canopyC > 0).toBe(cell.plantable && (cell.treePct ?? 0) < MAX_REALISTIC_CANOPY_PCT);
     });
+  });
+
+  it("starts every cell from tree cover that was measured, not assumed", () => {
+    const measured = data.cells.filter((c) => typeof c.treePct === "number");
+    expect(measured.length).toBe(data.cells.length);
+    for (const cell of measured) {
+      expect(cell.treePct).toBeGreaterThanOrEqual(0);
+      expect(cell.treePct).toBeLessThanOrEqual(100);
+    }
+    // A city with no trees at all, or nothing but trees, would mean the layer was misread.
+    const mean = measured.reduce((s, c) => s + (c.treePct ?? 0), 0) / measured.length;
+    expect(mean).toBeGreaterThan(1);
+    expect(mean).toBeLessThan(60);
   });
 
   it("counts residents only in cells an intervention actually reached", () => {

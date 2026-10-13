@@ -2,10 +2,10 @@ import Link from "next/link";
 import Logo from "./Logo";
 
 const QUICK_LINKS = [
-  { href: "/dashboard", label: "Dashboard" },
+  { href: "/dashboard", label: "Map" },
   { href: "/calculator", label: "Calculator" },
   { href: "/simulate", label: "Simulator" },
-  { href: "/calculator#how-the-score-works", label: "How the score works" },
+  { href: "/data", label: "Data & method" },
 ];
 
 const LEGAL_LINKS = [
